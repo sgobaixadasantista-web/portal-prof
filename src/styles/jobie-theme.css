@@ -578,3 +578,15 @@
  .jobie-account-dropdown{right:0}
 }
 @media(prefers-reduced-motion:reduce){.jobie-loading-bar,.jobie-loading-card{animation:none}}
+
+/* V0.8 — ações de continuidade na visão geral. */
+.jobie-shell .jobie-action-required{
+ display:flex;align-items:center;justify-content:space-between;
+ gap:18px;flex-wrap:wrap;background:#fff;
+ border:1px solid #dfd4f7;border-left:4px solid #5734dc;
+ padding:15px 20px;margin:0 0 18px;border-radius:13px;
+ color:#322448;
+}
+.jobie-shell .jobie-action-required strong{font-size:14px}
+.jobie-shell .jobie-action-required p{font-size:12px;color:#5c536a;line-height:1.5;margin:5px 0 0}
+.jobie-shell .jobie-action-required a{color:#4b25b9;font-size:12px;font-weight:800}
