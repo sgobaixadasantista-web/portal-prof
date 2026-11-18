@@ -1,0 +1,119 @@
+/*
+ * Portal do Professor — Design System D / Criativa Contemporânea
+ * Tokens de referência. NÃO importar no layout até concluir a etapa piloto.
+ * Tokens semânticos são a API pública; valores primitivos podem evoluir.
+ * Contrastes calculados no estado base: primary/white ~7.58:1,
+ * purple-500/white ~3.54:1 (uso decorativo, não texto normal),
+ * text-secondary/white ~6.05:1.
+ */
+:root {
+  color-scheme: light;
+
+  /* Primitivos: índigo, lavanda e pêssego */
+  --pp-indigo-50: #F1F0FA;
+  --pp-indigo-100: #E4E1F4;
+  --pp-indigo-300: #A69CDC;
+  --pp-indigo-500: #5146A5;
+  --pp-indigo-600: #453993;
+  --pp-indigo-700: #3B337C;
+  --pp-indigo-900: #26214F;
+  --pp-lavender-100: #F0EAF8;
+  --pp-lavender-300: #C5B3E0;
+  --pp-lavender-500: #987AC6;
+  --pp-peach-100: #FFF2E9;
+  --pp-peach-400: #E6A06A;
+  --pp-peach-700: #875025;
+  --pp-neutral-0: #FFFFFF;
+  --pp-neutral-50: #F8F7FC;
+  --pp-neutral-100: #F1F0F7;
+  --pp-neutral-200: #E3E0ED;
+  --pp-neutral-500: #5F6179;
+  --pp-neutral-900: #242338;
+
+  /* Design tokens semânticos */
+  --pp-color-primary: var(--pp-indigo-500);
+  --pp-color-primary-hover: var(--pp-indigo-600);
+  --pp-color-primary-active: var(--pp-indigo-700);
+  --pp-color-on-primary: var(--pp-neutral-0);
+  --pp-color-accent: var(--pp-lavender-500);
+  --pp-color-highlight: var(--pp-peach-400);
+  --pp-color-page: var(--pp-neutral-50);
+  --pp-color-surface: var(--pp-neutral-0);
+  --pp-color-surface-soft: var(--pp-indigo-50);
+  --pp-color-text: var(--pp-neutral-900);
+  --pp-color-text-muted: var(--pp-neutral-500);
+  --pp-color-border: var(--pp-neutral-200);
+  --pp-color-focus: #3B337C;
+  --pp-color-focus-ring: #C5B3E0;
+  --pp-color-link: var(--pp-indigo-600);
+  --pp-color-disabled-bg: #F1F0F7;
+  --pp-color-disabled-text: #77758B;
+
+  /* Feedback — sempre usar texto/ícones, nunca apenas cor */
+  --pp-color-success: #18794E;
+  --pp-color-success-soft: #E8F5ED;
+  --pp-color-warning: #9A6700;
+  --pp-color-warning-soft: #FFF4D6;
+  --pp-color-danger: #B42332;
+  --pp-color-danger-soft: #FDECEE;
+  --pp-color-info: #205DB5;
+  --pp-color-info-soft: #EAF2FF;
+
+  /* Tipografia: primeiro carregar Inter legalmente por pacote/CSS,
+     usar fallback sem dependência quando não disponível */
+  --pp-font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --pp-font-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --pp-text-xs: 0.75rem;
+  --pp-text-sm: 0.875rem;
+  --pp-text-md: 1rem;
+  --pp-text-lg: 1.125rem;
+  --pp-text-xl: 1.25rem;
+  --pp-text-2xl: 1.5rem;
+  --pp-text-3xl: 1.875rem;
+  --pp-leading-tight: 1.25;
+  --pp-leading-normal: 1.55;
+  --pp-weight-regular: 400;
+  --pp-weight-medium: 500;
+  --pp-weight-semibold: 600;
+  --pp-weight-bold: 700;
+
+  /* Grade de 4px; distâncias entre controles 8–16px */
+  --pp-space-0: 0;
+  --pp-space-1: 0.25rem;
+  --pp-space-2: 0.5rem;
+  --pp-space-3: 0.75rem;
+  --pp-space-4: 1rem;
+  --pp-space-5: 1.25rem;
+  --pp-space-6: 1.5rem;
+  --pp-space-8: 2rem;
+  --pp-space-10: 2.5rem;
+  --pp-space-12: 3rem;
+
+  /* Forma e superfícies */
+  --pp-radius-sm: 0.375rem;
+  --pp-radius-md: 0.625rem;
+  --pp-radius-lg: 0.875rem;
+  --pp-radius-xl: 1.125rem;
+  --pp-radius-pill: 999px;
+  --pp-shadow-card: 0 5px 20px rgb(38 33 79 / 7%);
+  --pp-shadow-popover: 0 12px 32px rgb(38 33 79 / 16%);
+  --pp-width-content: 72rem;
+  --pp-height-control: 2.75rem;
+  --pp-height-touch: 2.75rem;
+  --pp-motion-fast: 120ms;
+  --pp-motion-normal: 200ms;
+  --pp-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --pp-layer-header: 20;
+  --pp-layer-dropdown: 40;
+  --pp-layer-modal: 100;
+  --pp-layer-toast: 120;
+}
+
+/* Futuro modo escuro: definir substituições semânticas aqui somente após
+   homologar os fluxos e contrastes do tema claro. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --pp-motion-fast: 0ms;
+    --pp-motion-normal: 0ms;
+  }
+}
