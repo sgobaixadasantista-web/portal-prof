@@ -208,12 +208,13 @@ function Tela({user}:{user:User}){
    {conceitos.map(op=><option key={op.value} value={op.value}>{op.label}</option>)}
   </select>;
  }
- return <main className="wrap">
+ return <main className="wrap pp-pedagogical pp-assessments">
+  <span className="pp-ped-eyebrow">Acompanhamento pedagógico</span>
   <h1>Avaliações pedagógicas</h1>
   <p className="muted">Avaliação única por disciplina, conceitos fixos e indicador ponderado de 0,0 a 10,0.</p>
   {erro&&<p className="error" role="alert">{erro}</p>}
   {aviso&&<p className="success" role="status">{aviso}</p>}
-  <section className="card">
+  <section className="card pp-filter-card">
    <div className="form-grid">
     <label className="field">Turma<select value={turmaId} onChange={ev=>{setTurmaId(ev.target.value);setEdicoes({});}}>
       {turmas.map(t=><option key={t.id} value={t.id}>{escolas.find(e=>e.id===t.escola_id)?.nome??"Escola"} — {t.nome} ({t.ano_letivo})</option>)}
@@ -225,9 +226,9 @@ function Tela({user}:{user:User}){
       {rotulos.map(p=><option key={p} value={p}>{p}</option>)}
     </select></label>
    </div>
-   <div className="row" style={{justifyContent:"flex-start"}}>
-    <button className={modo==="individual"?"":"secondary"} onClick={()=>setModo("individual")}>Avaliação individual</button>
-    <button className={modo==="turma"?"":"secondary"} onClick={()=>setModo("turma")}>Avaliação por turma</button>
+   <div className="row pp-ped-tabs" role="group" aria-label="Modo de avaliação" style={{justifyContent:"flex-start"}}>
+    <button type="button" aria-pressed={modo==="individual"} className={modo==="individual"?"pp-ped-tab-active":"secondary"} onClick={()=>setModo("individual")}>Avaliação individual</button>
+    <button type="button" aria-pressed={modo==="turma"} className={modo==="turma"?"pp-ped-tab-active":"secondary"} onClick={()=>setModo("turma")}>Avaliação por turma</button>
    </div>
   </section>
   {!carregando&&disponiveis.length===0&&<section className="card top-space">
@@ -242,7 +243,7 @@ function Tela({user}:{user:User}){
     const av=avaliacaoDe(m.id),e=estadoDe(m.id);
     const concl=av?.status==="concluida";
     return <div key={m.id}>
-     <p className="muted">Status: <strong>{concl?"Concluída":av?"Rascunho":"Não iniciada"}</strong></p>
+     <p className="pp-ped-status-line">Status: <span className={concl?"pp-ped-badge pp-ped-badge--success":av?"pp-ped-badge pp-ped-badge--warning":"pp-ped-badge"}>{concl?"Concluída":av?"Rascunho":"Não iniciada"}</span></p>
      <div className="form-grid">
       <label className="field">Data da avaliação<input type="date" value={e.data} disabled={concl} onChange={ev=>editar(m.id,{data:ev.target.value})}/></label>
      </div>
@@ -251,8 +252,8 @@ function Tela({user}:{user:User}){
       <div style={{minWidth:170}}>{celula(m,c)}</div>
      </div>)}</div>
      <label className="field">Observações pedagógicas (opcional)<textarea rows={3} maxLength={2000} value={e.observacoes} disabled={concl} onChange={ev=>editar(m.id,{observacoes:ev.target.value})}/></label>
-     <h2>Indicador: {formato(indicadorDe(m.id))} / 10,0</h2>
-     {concl&&<section className="top-space"><h3>Revisão controlada</h3>
+     <div className="pp-indicator" aria-label="Indicador ponderado"><div><span>Indicador ponderado</span><small>Escala de 0,0 a 10,0</small></div><strong>{formato(indicadorDe(m.id))}<small> / 10,0</small></strong></div>
+     {concl&&<section className="top-space pp-review-panel"><h3>Revisão controlada</h3>
       <p className="muted small">Para corrigir uma avaliação concluída, informe a justificativa. A versão anterior será preservada no histórico.</p>
       {reabrindo===av?.id?<div>
        <label className="field">Motivo da reabertura<textarea rows={3} maxLength={1000} value={motivo} onChange={ev=>setMotivo(ev.target.value)} placeholder="Explique o motivo da revisão (mínimo 10 caracteres)" /></label>
@@ -266,13 +267,13 @@ function Tela({user}:{user:User}){
       <button disabled={salvando!==null} onClick={()=>void salvar(m.id,false)}>Salvar rascunho</button>
       <button disabled={salvando!==null} onClick={()=>void salvar(m.id,true)}>Concluir avaliação</button>
      </div>}
-     {av&&<section className="top-space"><h3>Histórico de revisões</h3>{historico(av)}</section>}
+     {av&&<section className="top-space pp-history-panel"><h3>Histórico de revisões</h3>{historico(av)}</section>}
     </div>;
    })}
   </section>}
   {carregando===false&&disponiveis.length>0&&modo==="turma"&&<section className="card top-space">
    <h2>Grade de avaliação</h2><p className="muted small">Uma linha por aluno. Salve cada linha antes de sair; somente avaliações concluídas ficam bloqueadas.</p>
-   <div style={{overflowX:"auto"}}>
+   <div className="pp-table-scroll" style={{overflowX:"auto"}}>
     <table className="avaliacao-grade"><thead><tr><th>Aluno</th>{disponiveis.map(c=><th key={c.id}>{c.nome}<span className="muted small"> (peso {c.peso})</span></th>)}<th>Indicador</th><th>Status / Ações</th></tr></thead>
     <tbody>{alunosNaTurma.map(m=>{
       const av=avaliacaoDe(m.id),e=estadoDe(m.id);
