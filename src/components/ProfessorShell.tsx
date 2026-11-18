@@ -4,16 +4,17 @@ import type {User} from "@supabase/supabase-js";
 import {usePathname,useRouter} from "next/navigation";
 import Link from "next/link";
 import {getSupabase} from "@/lib/supabase";
+import PortalIcon, {type PortalIconName} from "@/components/ui/PortalIcon";
 
 const menu=[
- {href:"/dashboard",label:"Visão geral",symbol:"◫"},
- {href:"/escolas",label:"Escolas",symbol:"▥"},
- {href:"/turmas",label:"Turmas",symbol:"▦"},
- {href:"/alunos",label:"Alunos",symbol:"♙"},
- {href:"/competencias",label:"Competências",symbol:"✧"},
- {href:"/avaliacoes",label:"Avaliações",symbol:"☑"},
- {href:"/relatorios",label:"Relatórios",symbol:"◴"},
-] as const;
+ {href:"/dashboard",label:"Visão geral",icon:"dashboard"},
+ {href:"/escolas",label:"Escolas",icon:"school"},
+ {href:"/turmas",label:"Turmas",icon:"classes"},
+ {href:"/alunos",label:"Alunos",icon:"students"},
+ {href:"/competencias",label:"Competências",icon:"competencies"},
+ {href:"/avaliacoes",label:"Avaliações",icon:"assessments"},
+ {href:"/relatorios",label:"Relatórios",icon:"reports"},
+ ] satisfies ReadonlyArray<{href:string;label:string;icon:PortalIconName}>;
 
 export default function ProfessorShell({children}:{children:(user:User)=>React.ReactNode}){
  const [user,setUser]=useState<User|null>(null);
@@ -57,18 +58,18 @@ export default function ProfessorShell({children}:{children:(user:User)=>React.R
    </Link>
    <nav className="jobie-menu">
     {menu.map(m=><Link key={m.href} href={m.href} className={"jobie-menu-item"+(pathname===m.href?" is-active":"")} aria-current={pathname===m.href?"page":undefined}>
-      <span className="jobie-menu-icon" aria-hidden="true">{m.symbol}</span><span>{m.label}</span>
+      <span className="jobie-menu-icon" aria-hidden="true"><PortalIcon name={m.icon} size={21}/></span><span>{m.label}</span>
     </Link>)}
    </nav>
    <div className="jobie-sidebar-bottom">
-    <Link href="/design-system" className={"jobie-menu-item jobie-lab"+(pathname==="/design-system"?" is-active":"")}><span className="jobie-menu-icon" aria-hidden="true">◈</span><span>Design System</span></Link>
+    <Link href="/design-system" className={"jobie-menu-item jobie-lab"+(pathname==="/design-system"?" is-active":"")}><span className="jobie-menu-icon" aria-hidden="true"><PortalIcon name="design" size={21}/></span><span>Design System</span></Link>
     <p>Portal do Professor <span>Interface inspirada no Jobie</span></p>
    </div>
   </aside>
   <div className="jobie-workspace">
    <header className="jobie-topbar">
     <div className="jobie-topbar-start">
-     <button type="button" className="jobie-menu-trigger" aria-label={menuOpen?"Fechar menu":"Abrir menu"} aria-expanded={menuOpen} onClick={()=>setMenuOpen(v=>!v)}><span aria-hidden="true">☰</span></button>
+     <button type="button" className="jobie-menu-trigger" aria-label={menuOpen?"Fechar menu":"Abrir menu"} aria-expanded={menuOpen} onClick={()=>setMenuOpen(v=>!v)}><span aria-hidden="true"><PortalIcon name="menu" size={22}/></span></button>
      <div className="jobie-topbar-title"><span className="jobie-breadcrumb">Portal do Professor /</span><strong>{atual}</strong></div>
     </div>
     <div className="jobie-account"><span className="jobie-avatar" aria-hidden="true">{letra}</span><div className="jobie-account-details"><strong>{nome}</strong><small>Minha conta</small></div><button type="button" className="jobie-exit" disabled={signingOut} onClick={()=>void sair()}>{signingOut?"Saindo...":"Sair"}</button></div>
