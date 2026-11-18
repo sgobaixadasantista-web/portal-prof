@@ -12,8 +12,8 @@
 | 2 — Identidade e navegação | Barra superior/nav com destaque índigo, marca tipográfica, navegação ativa e menu mobile | `ProfessorShell`, login, cadastro e recuperação | **Código implementado; regressão manual pendente**: login/Google/logout/recuperação e menu no celular |
 | 3 — Cadastros | Formulários, listas, estados e confirmação | `/escolas`, `/turmas`, `/alunos` | **Visual implementado; testes manuais de CRUD, importação e duplicação pendentes** |
 | 4 — Competências | Cards, pesos, filtros, ativação e biblioteca | `/competencias` | **Visual implementado; testes manuais de biblioteca, importação, pesos e ativação pendentes** |
-| 5 — Avaliações (alta criticidade) | ConceptSelect, grade responsiva, badges, bloqueios e timeline | `/avaliacoes` | Mesmos conceitos/valores, média ponderada, RPC única, reabertura e snapshots sem regressão |
-| 6 — Relatórios e dashboard | StatCard, DataTable, filtros, ExportActions, estilos print | `/relatorios`, `/dashboard` | CSV, impressão/PDF, cálculos e filtros preservados; folhas A4 legíveis |
+| 5 — Avaliações (alta criticidade) | Seletores de modo, grade responsiva, badges, indicador e painel de revisão | `/avaliacoes` | **Visual implementado; homologação manual de cálculo, RPC, reabertura e snapshots pendente** |
+| 6 — Relatórios e dashboard | Cartões de indicadores, tabelas, filtros e estilos print | `/relatorios`, `/dashboard` | **Relatórios visualmente migrados; dashboard analítico não implementado; CSV, impressão/PDF e filtros pendentes de validação manual** |
 | 7 — Consolidação | Auditoria final, limpeza de CSS antigo, documentação | Todas | Nenhum seletor quebrado, sem erros de console, testes intercontas e responsivos |
 
 ## 2. Aplicação por página
@@ -130,3 +130,13 @@ O CSS atual define valores de cor diretamente em `src/app/globals.css`. **Não**
 - Estados visuais de matrícula ativa/inativa e contadores de importação diferenciados com rótulos.
 - Nenhuma alteração em métodos de leitura/escrita no Supabase, validações de cadastro, importação de XLSX, duplicação de turmas ou regras de pesos.
 - **Pendente:** testes funcionais e de acessibilidade nos quatro módulos, além de revisão de layout real nos dispositivos.
+
+## 9. Registro — Avaliações e Relatórios (18/11/2026)
+
+- Aplicado `pp-pedagogical` nas rotas `/avaliacoes` e `/relatorios`.
+- Em Avaliações: navegação de modo com `aria-pressed`, status com rótulos, indicador em destaque, grade adaptada a scroll e painéis separados para revisão/histórico.
+- Em Relatórios: filtros, abas com seleção explícita, cartões de média e quantidade, cabeçalho e tabelas no padrão Paleta D.
+- Criado `src/styles/pedagogical-pages.css` e incluído no `globals.css` com seletores escopados.
+- CSS de impressão preserva fundo branco e mantém ocultos menu, filtros e botões; requer teste A4 real.
+- **Não houve mudança** no cálculo de conceitos, `motor_v06_salvar_avaliacao`, `motor_v061_reabrir_avaliacao`, view `motor_v06_indicadores`, filtros `professor_id` ou exportações.
+- **Pendente:** testar individual/grade, conclusão e reabertura, relatório por turma, evolução, CSV, PDF A4 e isolamento API.
