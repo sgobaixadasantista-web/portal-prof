@@ -186,3 +186,13 @@
  .pp-management .card{box-shadow:none}
  .pp-management button{display:none}
 }
+
+/* V0.8: identificação preventiva de nomes semelhantes, sem bloqueio automático. */
+.pp-students .pp-student-duplicates{
+ padding:13px 16px;border:1px solid #e2c58f;border-left:4px solid #986500;
+ background:#fff8e8;border-radius:9px;color:#65440d;
+ font-size:13px;line-height:1.55;margin:14px 0;
+}
+.pp-students .pp-student-duplicates p{margin:6px 0}
+.pp-students .pp-student-duplicates ul{margin:8px 0 2px;padding-left:20px}
+.pp-students .pp-student-duplicates li{margin:3px 0}
