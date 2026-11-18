@@ -269,3 +269,33 @@
  .pp-reports .relatorio-tabela thead{display:table-header-group}
  .pp-reports .relatorio-bloco{break-inside:avoid}
 }
+
+/* Refinamentos de usabilidade — relatórios V0.7 */
+.pp-report-type-tabs{margin:7px 0 15px}
+.pp-report-type-tabs .pp-ped-tabs{margin:0}
+.pp-reports .relatorio-document-head{align-items:flex-start;margin-bottom:13px}
+.pp-reports .relatorio-document-head h2{margin:0}
+.pp-reports .relatorio-document-head .relatorio-acoes{margin:0;gap:9px}
+.pp-reports .relatorio-document-head .relatorio-acoes>.muted{display:none}
+.pp-reports .relatorio-document-head .relatorio-acoes button{white-space:nowrap}
+.pp-reports .pp-nota{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.pp-reports .pp-nota>strong{font-variant-numeric:tabular-nums;font-size:13px}
+.pp-reports .pp-nota>span{font-size:11px;font-weight:700;border-radius:99px;padding:4px 9px}
+.pp-reports .pp-nota-ruim>span{background:#fde8e8;color:#982525}
+.pp-reports .pp-nota-regular>span{background:#fff0d6;color:#865000}
+.pp-reports .pp-nota-bom>span{background:#e6f1ff;color:#174d90}
+.pp-reports .pp-nota-ótimo>span{background:#e0f6e8;color:#146038}
+.pp-reports .pp-table-tools{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin-bottom:15px}
+.pp-reports .pp-table-tools label{display:grid;gap:6px;font-size:12px;font-weight:650;color:#484152}
+.pp-reports .pp-table-tools :is(input,select){padding:9px 12px;min-height:40px;border:1px solid #bfb8cc;border-radius:9px;background:#fff;color:#251b35}
+.pp-reports .pp-pagination{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:12px;color:#4a425b}
+.pp-reports .pp-pagination button{min-height:36px;padding:7px 10px}
+.pp-reports .pp-evolution-empty{padding:13px 16px;background:#f4f0ff;border-left:4px solid #5734dc;color:#38246e;border-radius:9px;line-height:1.6}
+.pp-reports .pp-help{cursor:help;color:#50309a;font-weight:800;font-size:16px;padding:0 4px}
+.pp-reports .muted,.pp-reports .small{color:#585263}
+.pp-reports .relatorio-capa .small{font-size:13px}
+.pp-visually-hidden{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;overflow:hidden!important}
+.pp-reports .filtros-relatorio>.row{align-items:center}
+.pp-reports .filtros-relatorio>.row button{padding:9px 13px;min-height:38px}
+@media(max-width:740px){.pp-reports .relatorio-document-head{align-items:stretch}.pp-reports .relatorio-document-head .relatorio-acoes{justify-content:flex-start}}
+@media print{.pp-reports .pp-table-tools,.pp-reports .pp-pagination{display:none!important}.pp-reports .pp-nota>span{border:1px solid #999}}
