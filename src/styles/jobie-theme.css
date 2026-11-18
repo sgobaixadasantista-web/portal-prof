@@ -515,3 +515,20 @@
 @media(prefers-reduced-motion:reduce){
  .jobie-shell .jobie-topbar-link{transition:none}
 }
+
+/* Título contextual e único na topbar roxa, sem breadcrumb ou ícone. */
+.jobie-shell .jobie-topbar-current-title{
+ margin:0;
+ color:#fff;
+ font-family:var(--pp-font-sans);
+ font-size:19px;
+ font-weight:750;
+ letter-spacing:-.025em;
+ line-height:1.25;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
+}
+@media(max-width:600px){
+ .jobie-shell .jobie-topbar-current-title{font-size:16px}
+}
