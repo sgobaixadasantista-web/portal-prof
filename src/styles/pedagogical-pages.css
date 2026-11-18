@@ -299,3 +299,5 @@
 .pp-reports .filtros-relatorio>.row button{padding:9px 13px;min-height:38px}
 @media(max-width:740px){.pp-reports .relatorio-document-head{align-items:stretch}.pp-reports .relatorio-document-head .relatorio-acoes{justify-content:flex-start}}
 @media print{.pp-reports .pp-table-tools,.pp-reports .pp-pagination{display:none!important}.pp-reports .pp-nota>span{border:1px solid #999}}
+
+.pp-completed-notice{padding:13px 16px;border-left:4px solid #18794e;border-radius:9px;background:#ecf8f0;color:#21563c;font-size:13px;line-height:1.65;margin:16px 0}
