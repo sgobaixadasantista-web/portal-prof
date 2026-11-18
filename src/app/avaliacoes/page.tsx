@@ -253,6 +253,7 @@ function Tela({user}:{user:User}){
      </div>)}</div>
      <label className="field">Observações pedagógicas (opcional)<textarea rows={3} maxLength={2000} value={e.observacoes} disabled={concl} onChange={ev=>editar(m.id,{observacoes:ev.target.value})}/></label>
      <div className="pp-indicator" aria-label="Indicador ponderado"><div><span>Indicador ponderado</span><small>Escala de 0,0 a 10,0</small></div><strong>{formato(indicadorDe(m.id))}<small> / 10,0</small></strong></div>
+     {concl&&<p role="status" className="pp-completed-notice">Avaliação concluída. Os campos estão bloqueados para preservar o histórico. Para corrigir, utilize a opção de reabertura abaixo.</p>}
      {concl&&<section className="top-space pp-review-panel"><h3>Revisão controlada</h3>
       <p className="muted small">Para corrigir uma avaliação concluída, informe a justificativa. A versão anterior será preservada no histórico.</p>
       {reabrindo===av?.id?<div>
