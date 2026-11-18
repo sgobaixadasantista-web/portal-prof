@@ -10,8 +10,8 @@
 | 0 — Base | Tokens, tipografia, catálogo e documentação | Nenhuma tela em produção | Tokens centralizados, contrastes revisados, sem alteração no build funcional |
 | 1 — Componentes-base | Button, TextField, TextArea, Select, Card, Alert e PageHeader | Página piloto isolada | Acessibilidade por teclado, responsividade, estados, sem dependência de Supabase |
 | 2 — Identidade e navegação | Barra superior/nav com destaque índigo, marca tipográfica, navegação ativa e menu mobile | `ProfessorShell`, login, cadastro e recuperação | **Código implementado; regressão manual pendente**: login/Google/logout/recuperação e menu no celular |
-| 3 — Cadastros | Formulários, tabelas, estados e confirmação | `/escolas`, `/turmas`, `/alunos` | CRUD, importação de Excel/lista, vínculo de matrícula, duplicação de turma funcionando |
-| 4 — Competências | Cards, pesos, filtros, ativação e biblioteca | `/competencias` | Modelos/importação, pesos 0–100 e ativação preservados |
+| 3 — Cadastros | Formulários, listas, estados e confirmação | `/escolas`, `/turmas`, `/alunos` | **Visual implementado; testes manuais de CRUD, importação e duplicação pendentes** |
+| 4 — Competências | Cards, pesos, filtros, ativação e biblioteca | `/competencias` | **Visual implementado; testes manuais de biblioteca, importação, pesos e ativação pendentes** |
 | 5 — Avaliações (alta criticidade) | ConceptSelect, grade responsiva, badges, bloqueios e timeline | `/avaliacoes` | Mesmos conceitos/valores, média ponderada, RPC única, reabertura e snapshots sem regressão |
 | 6 — Relatórios e dashboard | StatCard, DataTable, filtros, ExportActions, estilos print | `/relatorios`, `/dashboard` | CSV, impressão/PDF, cálculos e filtros preservados; folhas A4 legíveis |
 | 7 — Consolidação | Auditoria final, limpeza de CSS antigo, documentação | Todas | Nenhum seletor quebrado, sem erros de console, testes intercontas e responsivos |
@@ -120,3 +120,13 @@ O CSS atual define valores de cor diretamente em `src/app/globals.css`. **Não**
 - `src/app/globals.css`: cores globais, foco, superfícies, inputs, navegação e estilos de autenticação padronizados. Regras de impressão dos relatórios preservadas.
 - As páginas de escolas, turmas, alunos, competências, avaliações e relatórios receberam estilos globais, mas a revisão de componentes e grids dessas páginas segue nas fases posteriores.
 - Não houve migração SQL ou alteração de RPC/RLS.
+
+## 8. Registro de migração — cadastros e competências (18/11/2026)
+
+- Aplicado `pp-management` com escopo nas páginas `/escolas`, `/turmas`, `/alunos` e `/competencias`.
+- Novo arquivo `src/styles/management-pages.css` importado pelo `globals.css`, usando os tokens da Paleta D.
+- Padronizados cartões, cabeçalhos, etiquetas, campos, botões, listas de registros, mensagens e adaptação para telas pequenas.
+- Abas visuais de cadastro de alunos e configuração de competências passaram a expor `aria-pressed` em botões, com destaque de seleção.
+- Estados visuais de matrícula ativa/inativa e contadores de importação diferenciados com rótulos.
+- Nenhuma alteração em métodos de leitura/escrita no Supabase, validações de cadastro, importação de XLSX, duplicação de turmas ou regras de pesos.
+- **Pendente:** testes funcionais e de acessibilidade nos quatro módulos, além de revisão de layout real nos dispositivos.
