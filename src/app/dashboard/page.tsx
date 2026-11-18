@@ -11,6 +11,7 @@ export default function Dashboard(){
  <section className="card"><h2>Disciplinas e competências</h2><p>Configure disciplinas, importe modelos e defina pesos por turma.</p><Link href="/competencias">Configurar competências</Link></section>
  <section className="card"><h2>Avaliações</h2><p>Lance conceitos individualmente ou por turma e acompanhe o indicador ponderado.</p><Link href="/avaliacoes">Lançar avaliações</Link></section>
  <section className="card"><h2>Relatórios</h2><p>Emita relatórios individuais, de turma e de evolução com base nas avaliações concluídas.</p><Link href="/relatorios">Ver relatórios</Link></section>
+ <section className="card"><h2>Design System · Paleta D</h2><p>Conheça a biblioteca visual em demonstração, sem alterar seus dados pedagógicos.</p><Link href="/design-system">Abrir catálogo visual</Link></section>
  </div>
  <p className="muted small">Primeira versão de desenvolvimento. Os módulos ainda não implementados aparecem somente como planejamento.</p>
  </main>}</ProfessorShell>;
