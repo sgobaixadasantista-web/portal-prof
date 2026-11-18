@@ -16,7 +16,7 @@ type Item={avaliacao_id:string;competencia_nome_snapshot:string;conceito:string;
 type Linha={avaliacao:Avaliacao;aluno:string;turma:Turma;disciplina:string;nota:number|null;avaliadas:number;total:number};
 type Modo="individual"|"turma"|"evolucao";
 const nota=(v:number|null)=>v===null?"—":Number(v).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
-const nomeLegivel=(v:string)=>v.toLocaleLowerCase("pt-BR").replace(/(^|[\\s-])\\p{L}/gu,c=>c.toLocaleUpperCase("pt-BR"));
+const nomeLegivel=(v:string)=>v.toLocaleLowerCase("pt-BR").replace(/(^|[ -])([a-zà-ÿ])/g,(_,prefix:string,letra:string)=>prefix+letra.toLocaleUpperCase("pt-BR"));
 const faixa=(n:number|null)=>n===null?null:n<5?"Ruim":n<7.5?"Regular":n<10?"Bom":"Ótimo";
 const NotaComConceito=({valor}:{valor:number|null})=><span className={"pp-nota pp-nota-"+(faixa(valor)?.toLowerCase()??"vazia")}><strong>{nota(valor)}</strong>{valor!==null&&<span>{faixa(valor)}</span>}</span>;
 const conceito=(v:string)=>({ruim:"Ruim",regular:"Regular",bom:"Bom",otimo:"Ótimo",nao_avaliado:"Não avaliado"} as Record<string,string>)[v]??v;
