@@ -27,5 +27,5 @@ export default function ProfessorShell({children}:{children:(user:User)=>React.R
  },[router]);
  if(loading)return <main className="wrap">Carregando conta...</main>;
  if(!user)return <main className="wrap">Redirecionando para o login...</main>;
- return <><nav className="nav"><div className="nav-inner"><Link className="brand" href="/dashboard">Portal do Professor</Link><Link href="/dashboard">Dashboard</Link><Link href="/escolas">Escolas</Link><button className="secondary" onClick={async()=>{await getSupabase().auth.signOut();router.replace("/login");}}>Sair</button></div></nav>{children(user)}</>;
+ return <><nav className="nav"><div className="nav-inner"><Link className="brand" href="/dashboard">Portal do Professor</Link><Link href="/dashboard">Dashboard</Link><Link href="/escolas">Escolas</Link><Link href="/turmas">Turmas</Link><button className="secondary" onClick={async()=>{await getSupabase().auth.signOut();router.replace("/login");}}>Sair</button></div></nav>{children(user)}</>;
 }
