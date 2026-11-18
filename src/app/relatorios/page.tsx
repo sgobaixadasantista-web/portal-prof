@@ -122,6 +122,27 @@ function Relatorios({user}:{user:User}){
 
  const excel=()=>{
   const prefixo="portal_professor_"+modo;
+  if(modo==="boletim"){
+   const disciplinasBoletim=Array.from(new Map(linhas.map(l=>[l.avaliacao.disciplina_id,l.disciplina])).entries()).sort((a,b)=>a[1].localeCompare(b[1],"pt-BR"));
+   const grupos=new Map<string,{escola:string;turma:string;ano:number;aluno:string;periodo:string;notas:Map<string,number|null>}>();
+   for(const l of linhas){
+    const chave=l.avaliacao.matricula_id+"|"+l.avaliacao.periodo_rotulo;
+    if(!grupos.has(chave))grupos.set(chave,{
+     escola:escolas.find(e=>e.id===l.turma.escola_id)?.nome??"",
+     turma:l.turma.nome,ano:l.turma.ano_letivo,aluno:l.aluno,
+     periodo:l.avaliacao.periodo_rotulo,notas:new Map()
+    });
+    grupos.get(chave)!.notas.set(l.avaliacao.disciplina_id,l.nota);
+   }
+   const dados=[...grupos.values()].map(g=>{
+    const valores=disciplinasBoletim.map(([id])=>g.notas.get(id)??null);
+    const validos=valores.filter((n):n is number=>n!==null);
+    const mediaBoletim=validos.length?validos.reduce((acc,n)=>acc+n,0)/validos.length:null;
+    return [g.escola,g.turma,g.ano,g.aluno,g.periodo,...valores.map(n=>n===null?"":nota(n)),mediaBoletim===null?"":nota(mediaBoletim)];
+   });
+   exportarCsv(prefixo,["Escola","Turma","Ano letivo","Aluno","Período",...disciplinasBoletim.map(([,nome])=>nome),"Média das disciplinas"],dados);
+   return;
+  }
   const cab=["Escola","Turma","Ano letivo","Aluno","Disciplina","Período","Data","Indicador (0–10)","Competências avaliadas","Total de competências","Observações"];
   const base=linhas.map(l=>[escolas.find(e=>e.id===l.turma.escola_id)?.nome??"",l.turma.nome,l.turma.ano_letivo,l.aluno,l.disciplina,l.avaliacao.periodo_rotulo,dataBR(l.avaliacao.data_avaliacao),l.nota===null?"":nota(l.nota),l.avaliadas,l.total,l.avaliacao.observacoes??""]);
   if(modo==="individual"){
@@ -183,7 +204,7 @@ function Relatorios({user}:{user:User}){
       return <tr key={l.avaliacao.id}><td>{nomeLegivel(l.aluno)}</td><td>{l.turma.nome} ({l.turma.ano_letivo})</td><td>{l.disciplina}</td><td>{l.avaliacao.periodo_rotulo}</td><td><NotaComConceito valor={l.nota}/></td><td>{variacao===null?"—":(variacao>0?"+":"")+nota(variacao)}</td></tr>;
      })}</tbody></table></div></div>}
     </>}
-    <p className="muted small top-space">Indicadores de 0 a 10. Conceitos: Ruim 2,5 · Regular 5,0 · Bom 7,5 · Ótimo 10,0; competências não avaliadas não entram no cálculo. A média geral é a média simples dos indicadores das avaliações listadas, e não um conceito consolidado por aluno.</p>
+    <p className="muted small top-space">Indicadores de 0 a 10. Os conceitos registrados nas competências são Ruim (2,5), Regular (5,0), Bom (7,5) e Ótimo (10,0); itens não avaliados não entram no cálculo. As faixas coloridas exibidas ao lado da média são apenas referências visuais, não substituem os conceitos lançados. A média geral é simples e não determina aprovação ou reprovação.</p>
    </section>
   </div>}
  </main>;
