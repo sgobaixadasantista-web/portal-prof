@@ -42,9 +42,6 @@ export default function ProfessorShell({children}:{children:(user:User)=>React.R
  if(!user)return <main className="wrap">Redirecionando para login...</main>;
  const nome=String(user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split("@")[0]||"Professor");
  const letra=nome.trim().charAt(0).toUpperCase()||"P";
- const secao=menu.find(m=>m.href===pathname);
- const atual=secao?.label??(pathname==="/design-system"?"Design System":"Portal do Professor");
- const iconAtual:PortalIconName=secao?.icon??"design";
  async function sair(){
   if(signingOut)return;setSigningOut(true);
   const {error}=await getSupabase().auth.signOut();
@@ -72,11 +69,6 @@ export default function ProfessorShell({children}:{children:(user:User)=>React.R
    <header className="jobie-topbar">
     <div className="jobie-topbar-start">
      <button type="button" className="jobie-menu-trigger" aria-label={menuOpen?"Fechar menu":"Abrir menu"} aria-expanded={menuOpen} onClick={()=>setMenuOpen(v=>!v)}><PortalIcon name="menu" size={22}/></button>
-     <span className="jobie-topbar-page-icon" aria-hidden="true"><PortalIcon name={iconAtual} size={22}/></span>
-     <div className="jobie-topbar-title">
-      <div className="jobie-topbar-crumb"><Link href="/dashboard">Portal do Professor</Link><span aria-hidden="true">/</span><span aria-current="page">{atual}</span></div>
-      <strong>{atual}</strong>
-     </div>
     </div>
     <div className="jobie-topbar-end">
      <Link href="/relatorios" className="jobie-topbar-link"><PortalIcon name="reports" size={18}/><span>Relatórios</span></Link>
