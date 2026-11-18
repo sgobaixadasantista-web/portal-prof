@@ -1,0 +1,188 @@
+/* Paleta D — formulários e cadastros. Escopo restrito a quatro páginas. */
+.pp-management{
+ --pp-module-border:var(--pp-color-border);
+ color:var(--pp-color-text);
+ max-width:var(--pp-width-content);
+ padding-top:36px;
+ padding-bottom:72px;
+}
+.pp-management > h1,.pp-management .pp-page-heading h1{
+ color:var(--pp-indigo-900);
+ font-size:clamp(24px,2.5vw,30px);
+ line-height:1.22;
+ letter-spacing:-.025em;
+ margin:4px 0 9px;
+}
+.pp-management .pp-eyebrow{
+ display:block;
+ font-size:11px;
+ line-height:1.3;
+ font-weight:700;
+ letter-spacing:.12em;
+ text-transform:uppercase;
+ color:var(--pp-color-primary);
+ margin-bottom:8px;
+}
+.pp-management .pp-page-heading{margin-bottom:25px;align-items:start}
+.pp-management .pp-page-heading .muted{max-width:680px}
+.pp-management > .muted{margin:0 0 22px}
+.pp-management > .card:first-of-type{margin-top:22px}
+.pp-management .card{
+ border-radius:var(--pp-radius-xl);
+ padding:clamp(18px,2.3vw,28px);
+ box-shadow:var(--pp-shadow-card);
+}
+.pp-management .card h2{
+ font-size:19px;
+ font-weight:700;
+ color:var(--pp-indigo-900);
+ letter-spacing:-.015em;
+ margin:0 0 15px;
+}
+.pp-management .card > p.muted{font-size:14px;line-height:1.6}
+.pp-management .field{
+ color:var(--pp-color-text);
+ font-size:13px;
+ font-weight:600;
+ min-width:0;
+ gap:8px;
+}
+.pp-management :is(input,select,textarea){
+ max-width:100%;
+ border:1px solid #C8C4D9;
+ border-radius:var(--pp-radius-md);
+ background:var(--pp-color-surface);
+ color:var(--pp-color-text);
+ padding:11px 13px;
+ font-size:14px;
+ line-height:1.4;
+}
+.pp-management :is(input,select){min-height:44px}
+.pp-management textarea{display:block;width:100%;resize:vertical;min-height:92px}
+.pp-management :is(input,textarea)::placeholder{color:#77758B}
+.pp-management :is(input,select,textarea):focus-visible{
+ outline:3px solid var(--pp-color-focus-ring);
+ border-color:var(--pp-color-primary);
+ outline-offset:1px;
+}
+.pp-management :is(input,select,textarea):disabled{
+ background:var(--pp-color-disabled-bg);
+ color:var(--pp-color-disabled-text);
+}
+.pp-management button{min-height:42px;font-size:13px;font-weight:600;line-height:1.3}
+.pp-management button:not(.secondary){box-shadow:0 2px 5px rgba(38,33,79,.08)}
+.pp-management button.secondary{
+ border-color:#CBC5E4;
+ color:var(--pp-indigo-700);
+ background:var(--pp-color-surface);
+}
+.pp-management button.secondary:hover:not(:disabled){background:var(--pp-indigo-50)}
+.pp-management button.pp-danger-action{
+ color:var(--pp-color-danger);
+ background:var(--pp-color-danger-soft);
+ border-color:#F1C5CB;
+}
+.pp-management button.pp-danger-action:hover:not(:disabled){
+ background:#F9DCE1;
+ color:#931E2B;
+}
+.pp-management .form-grid{gap:4px 20px}
+.pp-management .row{gap:12px}
+.pp-management .turma-lista{gap:10px;margin-top:16px}
+.pp-management .turma-item,.pp-management .pp-list-row{
+ background:var(--pp-color-surface);
+ border:1px solid var(--pp-module-border);
+ border-radius:var(--pp-radius-lg);
+ padding:15px 17px;
+ min-width:0;
+ gap:16px;
+ transition:background var(--pp-motion-fast),border-color var(--pp-motion-fast);
+}
+.pp-management .pp-list-row{margin:0}
+.pp-management .turma-item:hover,.pp-management .pp-list-row:hover{
+ border-color:var(--pp-indigo-300);
+ background:#FCFBFF;
+}
+.pp-management .turma-item strong,.pp-management .pp-list-row strong{
+ color:var(--pp-indigo-900);
+ font-size:14px;
+ overflow-wrap:anywhere;
+}
+.pp-management .turma-item p{font-size:13px;line-height:1.5;margin:6px 0}
+.pp-management .turma-item .row{gap:8px}
+.pp-management .turma-item .field{margin:0}
+.pp-management .turma-item button{min-height:38px;padding:9px 12px}
+.pp-management .pp-create-form{align-items:end}
+.pp-management .pp-create-form .field{min-width:min(100%,230px)}
+.pp-management .pp-create-form button{margin-bottom:14px}
+.pp-management .pp-segmented{
+ display:flex;
+ flex-wrap:wrap;
+ gap:6px!important;
+ border-radius:12px;
+ background:var(--pp-indigo-50);
+ padding:5px;
+ width:fit-content;
+ max-width:100%;
+ margin:12px 0 20px;
+}
+.pp-management .pp-segmented button,.pp-management .pp-segmented-active{
+ border:0;
+ border-radius:9px;
+ background:transparent;
+ color:var(--pp-indigo-700);
+ box-shadow:none!important;
+}
+.pp-management .pp-segmented button[aria-pressed="true"],.pp-management button.pp-segmented-active{
+ background:var(--pp-color-primary);
+ color:var(--pp-color-on-primary);
+}
+.pp-management .pp-segmented button[aria-pressed="true"]:hover,.pp-management button.pp-segmented-active:hover:not(:disabled){
+ background:var(--pp-color-primary-hover);
+}
+.pp-management .pp-chip{
+ display:inline-flex;
+ align-items:center;
+ padding:5px 10px;
+ border-radius:999px;
+ font-size:12px;
+ line-height:1.4;
+ font-weight:600;
+ background:var(--pp-indigo-50);
+ color:var(--pp-indigo-700);
+}
+.pp-management .pp-chip--success{background:var(--pp-color-success-soft);color:var(--pp-color-success)}
+.pp-management .pp-chip--danger{background:var(--pp-color-danger-soft);color:var(--pp-color-danger)}
+.pp-management .pp-chip--muted{background:var(--pp-neutral-100);color:var(--pp-color-text-muted)}
+.pp-management > p.error,.pp-management > p.success{
+ padding:12px 15px;
+ border-radius:var(--pp-radius-md);
+ font-size:14px;
+ border:1px solid transparent;
+}
+.pp-management > p.error{background:var(--pp-color-danger-soft);border-color:#EDBFC6}
+.pp-management > p.success{background:var(--pp-color-success-soft);border-color:#B8DDC7}
+.pp-management .small{line-height:1.5}
+.pp-management .card > .row:first-child h2{margin:0}
+.pp-management .card > .row:first-child{margin-bottom:14px}
+.pp-management .stack{gap:10px}
+.pp-management .stack[style*="padding: 0"]{padding:0}
+.pp-management .pp-list-row + .pp-list-row{margin-top:8px}
+.pp-management .pp-list-row button{padding:9px 14px;min-height:38px}
+@media(max-width:700px){
+ .pp-management{padding:20px 14px 52px}
+ .pp-management .card{padding:18px}
+ .pp-management .pp-page-heading{gap:8px}
+ .pp-management .row.pp-create-form{align-items:stretch}
+ .pp-management .pp-create-form .field{flex-basis:100%}
+ .pp-management .pp-create-form button{margin:0;width:100%}
+ .pp-management .turma-item,.pp-management .pp-list-row{align-items:stretch}
+ .pp-management .turma-item > div:first-child{min-width:0}
+ .pp-management .turma-item .row{justify-content:flex-start!important}
+ .pp-management .pp-segmented{width:100%}
+ .pp-management .pp-segmented button{flex:1;white-space:normal;padding:9px}
+}
+@media print{
+ .pp-management .card{box-shadow:none}
+ .pp-management button{display:none}
+}
