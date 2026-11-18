@@ -1,6 +1,6 @@
 # Plano de aplicação gradual — Design System Paleta D
 
-**Revisão:** 18/11/2026 · **Estado atual:** especificação e tokens adicionados, sem mudança visual nas telas de produção.
+**Revisão:** 18/11/2026 · **Estado atual:** tokens ativados globalmente; login, cadastro, recuperação de senha e navegação principal migrados para a Paleta D. Demais páginas recebem tokens globais de cores e superfícies, mas seus componentes especializados ainda exigem migração e testes.
 **Princípio:** o Design System altera apresentação; não altera autenticação, RLS, tabelas, dados, avaliações ou RPC.
 
 ## 1. Estratégia e sequência
@@ -9,7 +9,7 @@
 |---|---|---|---|
 | 0 — Base | Tokens, tipografia, catálogo e documentação | Nenhuma tela em produção | Tokens centralizados, contrastes revisados, sem alteração no build funcional |
 | 1 — Componentes-base | Button, TextField, TextArea, Select, Card, Alert e PageHeader | Página piloto isolada | Acessibilidade por teclado, responsividade, estados, sem dependência de Supabase |
-| 2 — Identidade e navegação | Barra superior/nav com destaque índigo, marca tipográfica, navegação ativa e menu mobile | `ProfessorShell`, layout, login e cadastro | Login/Google/logout/recuperação operam; menu visível no celular |
+| 2 — Identidade e navegação | Barra superior/nav com destaque índigo, marca tipográfica, navegação ativa e menu mobile | `ProfessorShell`, login, cadastro e recuperação | **Código implementado; regressão manual pendente**: login/Google/logout/recuperação e menu no celular |
 | 3 — Cadastros | Formulários, tabelas, estados e confirmação | `/escolas`, `/turmas`, `/alunos` | CRUD, importação de Excel/lista, vínculo de matrícula, duplicação de turma funcionando |
 | 4 — Competências | Cards, pesos, filtros, ativação e biblioteca | `/competencias` | Modelos/importação, pesos 0–100 e ativação preservados |
 | 5 — Avaliações (alta criticidade) | ConceptSelect, grade responsiva, badges, bloqueios e timeline | `/avaliacoes` | Mesmos conceitos/valores, média ponderada, RPC única, reabertura e snapshots sem regressão |
@@ -98,7 +98,7 @@ O CSS atual define valores de cor diretamente em `src/app/globals.css`. **Não**
 
 **Gate B — primeiro componente visual:** componentes-base implementados, testados e apresentados em catálogo separado. Status: próximo.
 
-**Gate C — navegação e formulários:** login e cadastro preservados, responsividade comprovada. Status: não iniciado.
+**Gate C — navegação e formulários:** estilos aplicados nas telas de acesso e navegação, incluindo menu mobile e link ativo. **Status: implementação concluída; teste manual de autenticação e responsividade pendente.**
 
 **Gate D — fluxos pedagógicos:** avaliações e auditoria testadas por conta, relatório impresso/exportado corretamente. Status: não iniciado.
 
@@ -111,3 +111,12 @@ O CSS atual define valores de cor diretamente em `src/app/globals.css`. **Não**
 - Recriar cadastros no banco ou fazer limpeza de dados.
 - Introduzir novo framework UI pesado sem necessidade.
 - Substituir CSV por XLSX ou impressão por PDF server-side nesta migração visual.
+
+## 7. Registro de migração visual — 18/11/2026
+
+- `src/styles/design-tokens.css` passou a ser importado por `src/app/globals.css`.
+- `src/components/ProfessorShell.tsx`: links ativos, menu responsivo, acesso ao catálogo e logout com tratamento de erro.
+- `src/components/AuthForm.tsx`: novo layout dividido no desktop e simplificado no celular; lógica de login, criação de conta, recuperação e Google OAuth preservada.
+- `src/app/globals.css`: cores globais, foco, superfícies, inputs, navegação e estilos de autenticação padronizados. Regras de impressão dos relatórios preservadas.
+- As páginas de escolas, turmas, alunos, competências, avaliações e relatórios receberam estilos globais, mas a revisão de componentes e grids dessas páginas segue nas fases posteriores.
+- Não houve migração SQL ou alteração de RPC/RLS.
