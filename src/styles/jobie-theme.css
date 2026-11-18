@@ -295,80 +295,223 @@
  .jobie-shell .jobie-menu-trigger{display:none!important}
 }
 
-/* Jobie V2 — topbar branco, identidade de página e ações compactas. */
+/* Jobie V3 — topbar roxa fixa, continuidade cromática com a sidebar.
+   Somente apresentação: sem alterações de autenticação, rotas ou dados. */
+.jobie-shell .jobie-workspace{
+ margin-left:250px;
+ width:calc(100% - 250px);
+ min-width:0;
+ background:#f6f6f8;
+ border-radius:0;
+}
 .jobie-shell .jobie-topbar{
  position:sticky;
  top:0;
  z-index:35;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:22px;
+ width:100%;
  height:82px;
  padding:12px clamp(18px,2.6vw,40px);
- border-radius:28px 0 0 0;
- border-bottom:1px solid #e9e7ee;
- background:rgba(255,255,255,.97);
- box-shadow:0 3px 18px rgba(42,26,80,.035);
- backdrop-filter:blur(12px);
+ border:0;
+ border-bottom:1px solid rgba(255,255,255,.12);
+ border-radius:0;
+ background:#4219a8;
+ color:#fff;
+ box-shadow:0 7px 20px rgba(31,13,86,.12);
+ backdrop-filter:none;
 }
-.jobie-shell .jobie-topbar-start{gap:14px;min-width:0}
-.jobie-topbar-page-icon{
- display:grid;place-items:center;
- width:42px;height:42px;flex-shrink:0;
- border-radius:13px;background:#f0eaff;color:#4f2ac3;
+.jobie-shell .jobie-topbar-start{
+ display:flex;
+ align-items:center;
+ gap:14px;
+ flex:1 1 auto;
+ min-width:0;
 }
-.jobie-shell .jobie-topbar-title{min-width:0;gap:5px}
-.jobie-topbar-crumb{
- display:flex;align-items:center;gap:9px;
- font-size:11px;font-weight:500;color:#9290a0;
+.jobie-shell .jobie-topbar-page-icon{
+ display:grid;
+ place-items:center;
+ width:43px;
+ height:43px;
+ flex-shrink:0;
+ border-radius:13px;
+ background:rgba(255,255,255,.13);
+ border:1px solid rgba(255,255,255,.15);
+ color:#fff;
+}
+.jobie-shell .jobie-topbar-title{
+ display:grid;
+ gap:6px;
+ min-width:0;
+}
+.jobie-shell .jobie-topbar-crumb{
+ display:flex;
+ align-items:center;
+ gap:9px;
+ font-size:11px;
+ font-weight:500;
+ color:#dacfff;
  white-space:nowrap;
 }
-.jobie-topbar-crumb a{color:#848092}
-.jobie-topbar-crumb a:hover{color:#4f2ac3;text-decoration:none}
-.jobie-topbar-crumb [aria-current="page"]{color:#675a84}
+.jobie-shell .jobie-topbar-crumb a{color:#f1ebff}
+.jobie-shell .jobie-topbar-crumb a:hover{color:#fff;text-decoration:none}
+.jobie-shell .jobie-topbar-crumb [aria-current="page"]{color:#e6dcff}
 .jobie-shell .jobie-topbar-title strong{
- font-size:18px;line-height:1.22;letter-spacing:-.025em;color:#241b36;
- overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+ color:#fff;
+ font-size:18px;
+ line-height:1.2;
+ letter-spacing:-.025em;
+ overflow:hidden;
+ text-overflow:ellipsis;
+ white-space:nowrap;
 }
-.jobie-topbar-end{display:flex;align-items:center;justify-content:flex-end;gap:17px;min-width:0}
-.jobie-topbar-link{
- display:inline-flex;align-items:center;justify-content:center;gap:9px;
- border-radius:11px;padding:10px 12px;
- font-size:12px;font-weight:700;color:#4e2bb6;
- background:#f5f1ff;border:1px solid #eee8ff;
- white-space:nowrap;transition:background .15s ease;
+.jobie-shell .jobie-topbar-end{
+ display:flex;
+ justify-content:flex-end;
+ align-items:center;
+ gap:16px;
+ flex:0 0 auto;
+ min-width:0;
 }
-.jobie-topbar-link:hover{background:#eae2ff;text-decoration:none}
-.jobie-topbar-separator{height:34px;width:1px;background:#eceaf1}
+.jobie-shell .jobie-topbar-link{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ gap:9px;
+ background:rgba(255,255,255,.10);
+ border:1px solid rgba(255,255,255,.15);
+ color:#fff;
+ border-radius:11px;
+ padding:10px 13px;
+ font-size:12px;
+ font-weight:700;
+ white-space:nowrap;
+ transition:background .15s ease,border-color .15s ease;
+}
+.jobie-shell .jobie-topbar-link:hover{
+ color:#fff;
+ background:rgba(255,255,255,.19);
+ border-color:rgba(255,255,255,.25);
+ text-decoration:none;
+}
+.jobie-shell .jobie-topbar-separator{
+ height:35px;
+ width:1px;
+ background:rgba(255,255,255,.18);
+}
 .jobie-shell .jobie-account{gap:11px}
 .jobie-shell .jobie-avatar{
- height:42px;width:42px;
- background:linear-gradient(145deg,#6c43d7,#4524ad);
- color:#fff;border:3px solid #eee7ff;
- box-shadow:0 2px 8px #5032aa18;
+ height:43px;
+ width:43px;
+ background:rgba(255,255,255,.16);
+ color:#fff;
+ border:2px solid rgba(255,255,255,.22);
+ box-shadow:none;
 }
-.jobie-shell .jobie-account-details{gap:4px;max-width:150px}
-.jobie-shell .jobie-account-details strong{color:#241d35;font-size:12px}
-.jobie-shell .jobie-account-details small{color:#898294;font-size:11px}
+.jobie-shell .jobie-account-details{
+ display:grid;
+ gap:4px;
+ max-width:150px;
+}
+.jobie-shell .jobie-account-details strong{
+ color:#fff;
+ font-size:12px;
+}
+.jobie-shell .jobie-account-details small{
+ color:#e0d6ff;
+ font-size:11px;
+}
 .jobie-shell .jobie-exit{
- min-height:36px;border-radius:10px;padding:8px 13px;
- background:#fff;border:1px solid #e7e3ee;color:#4930a5;
- box-shadow:0 2px 6px #27184907;
+ min-height:36px;
+ padding:8px 13px;
+ border:1px solid rgba(255,255,255,.2);
+ border-radius:10px;
+ background:#fff;
+ color:#4219a8;
+ box-shadow:none;
+ font-size:12px;
+ font-weight:700;
 }
-.jobie-shell .jobie-exit:hover:not(:disabled){background:#f5f1ff;color:#32148e}
+.jobie-shell .jobie-exit:hover:not(:disabled){
+ background:#f1eaff;
+ color:#321180;
+}
+.jobie-shell .jobie-menu-trigger{
+ display:none;
+ border:1px solid rgba(255,255,255,.2);
+ background:rgba(255,255,255,.11);
+ color:#fff;
+}
+.jobie-shell .jobie-menu-trigger:hover:not(:disabled){
+ background:rgba(255,255,255,.23);
+ color:#fff;
+}
+/* Área de conteúdo começa naturalmente abaixo do topo fixo. */
+.jobie-shell .jobie-content{background:#f6f6f8;min-width:0}
+.jobie-shell .jobie-content>.wrap{padding-top:25px}
+/* Acabamento do dashboard para acompanhar a identidade roxa. */
+.jobie-shell .jobie-welcome{
+ background:#fff;
+ border:1px solid #eeebf4;
+ border-radius:17px;
+ padding:clamp(18px,2.2vw,27px);
+ box-shadow:0 5px 20px rgba(30,19,75,.045);
+}
+.jobie-shell .jobie-welcome h1{color:#291c45}
+.jobie-shell .jobie-action-button{
+ background:#5734dc;
+ border-radius:11px;
+ box-shadow:0 7px 18px rgba(57,20,143,.13);
+}
+.jobie-shell .jobie-action-button:hover{background:#4425b6}
+.jobie-shell .jobie-stat-card{border-radius:16px}
+.jobie-shell .jobie-stat-purple{background:#5734dc}
+.jobie-shell .jobie-module-card:hover{border-color:#e3d9fa}
 @media(max-width:1100px){
- .jobie-topbar-link span{display:none}
- .jobie-topbar-link{width:40px;height:40px;padding:9px}
+ .jobie-shell .jobie-topbar-link{width:40px;height:40px;padding:9px}
+ .jobie-shell .jobie-topbar-link span{display:none}
+}
+@media(max-width:900px){
+ .jobie-shell .jobie-workspace{
+  width:100%;
+  margin-left:0;
+  border-radius:0;
+ }
+ .jobie-shell .jobie-topbar{
+  border-radius:0;
+ }
+ .jobie-shell .jobie-menu-trigger{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:40px;
+  min-height:40px;
+ }
 }
 @media(max-width:600px){
- .jobie-shell .jobie-topbar{height:70px;padding:9px 13px;border-radius:0}
+ .jobie-shell .jobie-topbar{height:70px;padding:9px 13px;gap:8px}
  .jobie-shell .jobie-topbar-start{gap:8px}
- .jobie-topbar-page-icon{width:35px;height:35px;border-radius:10px}
- .jobie-topbar-page-icon svg{height:18px;width:18px}
- .jobie-topbar-crumb{display:none}
+ .jobie-shell .jobie-topbar-page-icon{width:35px;height:35px;border-radius:10px}
+ .jobie-shell .jobie-topbar-page-icon svg{height:18px;width:18px}
+ .jobie-shell .jobie-topbar-crumb{display:none}
  .jobie-shell .jobie-topbar-title strong{font-size:15px}
- .jobie-topbar-end{gap:8px}
- .jobie-topbar-link,.jobie-topbar-separator,.jobie-account-details{display:none}
+ .jobie-shell .jobie-topbar-end{gap:8px}
+ .jobie-shell .jobie-topbar-link,
+ .jobie-shell .jobie-topbar-separator,
+ .jobie-shell .jobie-account-details{display:none}
  .jobie-shell .jobie-avatar{width:35px;height:35px}
  .jobie-shell .jobie-exit{padding:7px 10px}
+ .jobie-shell .jobie-content>.wrap{padding-top:16px}
+ .jobie-shell .jobie-welcome{padding:18px}
 }
 @media print{
+ .jobie-shell .jobie-workspace{margin-left:0!important;width:100%!important;background:#fff!important}
  .jobie-shell .jobie-topbar{display:none!important}
+ .jobie-shell .jobie-content{background:#fff!important}
+ .jobie-shell .jobie-welcome{box-shadow:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .jobie-shell .jobie-topbar-link{transition:none}
 }
