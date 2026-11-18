@@ -157,12 +157,12 @@ function Configurador({user}:{user:User}){
   if(error)setErro(error.message);else{setAlterando(null);await carregar();mensagem("Competência atualizada.");}
   setOcupado(false);
  }
- return <main className="wrap">
-  <h1>Disciplinas e competências</h1>
+ return <main className="wrap pp-management pp-skills">
+  <span className="pp-eyebrow">Planejamento pedagógico</span><h1>Disciplinas e competências</h1>
   <p className="muted">Configure os critérios pedagógicos do 1º ao 5º ano e seus pesos por turma. Os conceitos de avaliação continuarão fixos.</p>
   <div className="row" style={{justifyContent:"flex-start",marginBottom:18}}>
    {([["configurar","Configurar turma"],["biblioteca","Biblioteca de modelos"],["disciplinas","Disciplinas"]] as const).map(([v,l])=>
-    <button key={v} className={secao===v?"":"secondary"} onClick={()=>setSecao(v)}>{l}</button>)}
+    <button key={v} className={secao===v?"pp-segmented-active":"secondary"} aria-pressed={secao===v} onClick={()=>setSecao(v)}>{l}</button>)}
   </div>
   {erro&&<p role="alert" className="error">{erro}</p>}
   {aviso&&<p role="status" className="success">{aviso}</p>}
