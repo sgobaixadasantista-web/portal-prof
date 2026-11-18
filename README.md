@@ -9,8 +9,14 @@ Sistema web individual de acompanhamento pedagógico de professores do **Ensino 
 | [Manual funcional e páginas](docs/MANUAL_FUNCIONAL.md) | Todas as páginas, campos, operações, regras de uso e fluxo completo |
 | [Arquitetura, funções e dados](docs/ARQUITETURA_E_FUNCOES.md) | Stack, módulos TSX, RPCs, triggers, tabelas, view e segurança |
 | [Testes e pendências](docs/TESTES_E_PENDENCIAS.md) | Homologações relatadas, testes pendentes e backlog priorizado |
+| [Design System — Paleta D](docs/DESIGN_SYSTEM_PALETA_D.md) | Cores, tipografia, componentes, acessibilidade e tokens |
+| [Plano de migração visual](docs/PLANO_MIGRACAO_DESIGN_SYSTEM.md) | Etapas por página e checklist para preservar funcionalidades |
 
 Revisão da documentação: **18/11/2026**.
+
+## Identidade visual
+
+A paleta **D — Criativa Contemporânea** foi escolhida para a identidade visual da V1: índigo, lavanda e pêssego. A especificação e os tokens estão versionados em `src/styles/design-tokens.css`. **A aplicação visual nas telas ainda não começou**; o arquivo de tokens não é importado em produção para evitar regressões.
 
 ## Funcionalidades disponíveis
 
