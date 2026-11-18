@@ -4,6 +4,7 @@ import {useCallback,useEffect,useMemo,useState} from "react";
 import ProfessorShell from "@/components/ProfessorShell";
 import {getSupabase} from "@/lib/supabase";
 import type {User} from "@supabase/supabase-js";
+import {BoletimConsolidado,GraficoEvolucao,type RegistroPedagogico} from "@/components/reports/AnalisePedagogica";
 
 type Escola={id:string;nome:string};
 type Turma={id:string;nome:string;ano_letivo:number;ano_escolar:number;escola_id:string;periodicidade:string};
@@ -14,7 +15,7 @@ type Avaliacao={id:string;matricula_id:string;disciplina_id:string;periodo_rotul
 type Indicador={avaliacao_id:string;indicador:number|null;criterios_avaliados:number;total_criterios:number};
 type Item={avaliacao_id:string;competencia_nome_snapshot:string;conceito:string;peso_aplicado:number};
 type Linha={avaliacao:Avaliacao;aluno:string;turma:Turma;disciplina:string;nota:number|null;avaliadas:number;total:number};
-type Modo="individual"|"turma"|"evolucao";
+type Modo="individual"|"turma"|"boletim"|"evolucao";
 const nota=(v:number|null)=>v===null?"—":Number(v).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
 const nomeLegivel=(v:string)=>v.toLocaleLowerCase("pt-BR").replace(/(^|[ -])([a-zà-ÿ])/g,(_,prefix:string,letra:string)=>prefix+letra.toLocaleUpperCase("pt-BR"));
 const faixa=(n:number|null)=>n===null?null:n<5?"Ruim":n<7.5?"Regular":n<10?"Bom":"Ótimo";
@@ -112,7 +113,8 @@ function Relatorios({user}:{user:User}){
  const paginaAtual=Math.min(pagina,totalPaginas);
  const linhasPaginadas=linhasTabela.slice((paginaAtual-1)*20,paginaAtual*20);
  const evolucaoDisponivel=new Set(linhas.map(l=>l.turma.id+"|"+l.avaliacao.matricula_id+"|"+l.avaliacao.disciplina_id+"|"+l.avaliacao.periodo_rotulo)).size>0&&linhas.some((l,i)=>linhas.some((x,j)=>j!==i&&x.avaliacao.matricula_id===l.avaliacao.matricula_id&&x.avaliacao.disciplina_id===l.avaliacao.disciplina_id&&x.turma.id===l.turma.id&&x.avaliacao.periodo_rotulo!==l.avaliacao.periodo_rotulo));
- const titulo=modo==="individual"?"Relatório individual":modo==="turma"?"Relatório por turma":"Evolução por período";
+ const titulo=modo==="individual"?"Relatório individual":modo==="turma"?"Relatório por turma":modo==="boletim"?"Boletim consolidado":"Evolução por período";
+ const registrosPedagogicos=useMemo<RegistroPedagogico[]>(()=>linhas.map(l=>({matriculaId:l.avaliacao.matricula_id,aluno:l.aluno,turmaId:l.turma.id,turma:l.turma.nome,anoLetivo:l.turma.ano_letivo,disciplinaId:l.avaliacao.disciplina_id,disciplina:l.disciplina,periodo:l.avaliacao.periodo_rotulo,nota:l.nota})),[linhas]);
  const nomeEscola=escolas.find(e=>e.id===escolaId)?.nome??"Todas as escolas";
  const nomeTurma=turmas.find(t=>t.id===turmaId)?.nome??"Todas as turmas";
  const nomeDisciplina=disciplinas.find(d=>d.id===disciplinaId)?.nome??"Todas as disciplinas";
@@ -134,11 +136,12 @@ function Relatorios({user}:{user:User}){
  const imprimir=()=>window.print();
 
  return <main className="wrap relatorios pp-pedagogical pp-reports">
-  <div className="row relatorios-cabecalho"><div><span className="pp-ped-eyebrow">Resultados pedagógicos</span><h1>Relatórios e indicadores</h1><p className="muted">Somente avaliações concluídas da sua conta. Os resultados consideram apenas avaliações concluídas.</p></div><button className="secondary" onClick={()=>void carregar()} disabled={carregando}>Atualizar dados</button></div>
+  <div className="row relatorios-cabecalho"><div><span className="pp-ped-eyebrow">Resultados pedagógicos</span><h1>Relatórios e indicadores</h1><p className="muted">Consulte o boletim, as avaliações concluídas e a evolução dos resultados da sua conta.</p></div><button className="secondary" onClick={()=>void carregar()} disabled={carregando}>Atualizar dados</button></div>
   {erro&&<p className="error" role="alert">{erro}</p>}
   <div className="pp-report-type-tabs"><div className="row pp-ped-tabs" role="group" aria-label="Tipo de relatório" style={{justifyContent:"flex-start"}}>
     <button type="button" aria-pressed={modo==="individual"} className={modo==="individual"?"pp-ped-tab-active":"secondary"} onClick={()=>{setModo("individual");setPeriodo("");}}>Individual</button>
     <button type="button" aria-pressed={modo==="turma"} className={modo==="turma"?"pp-ped-tab-active":"secondary"} onClick={()=>setModo("turma")}>Turma</button>
+    <button type="button" aria-pressed={modo==="boletim"} className={modo==="boletim"?"pp-ped-tab-active":"secondary"} onClick={()=>setModo("boletim")}>Boletim</button>
     <button type="button" aria-pressed={modo==="evolucao"} className={modo==="evolucao"?"pp-ped-tab-active":"secondary"} onClick={()=>{setModo("evolucao");setPeriodo("");}}>Evolução</button>
    </div></div>
   <section className="card filtros-relatorio pp-filter-card">
@@ -169,8 +172,10 @@ function Relatorios({user}:{user:User}){
       <div className="relatorio-tabela-wrap"><table className="relatorio-tabela"><thead><tr><th>Competência</th><th>Conceito</th><th>Peso histórico</th></tr></thead><tbody>{itens.filter(i=>i.avaliacao_id===l.avaliacao.id).map((i,n)=><tr key={n}><td>{i.competencia_nome_snapshot}</td><td>{conceito(i.conceito)}</td><td>{i.peso_aplicado}</td></tr>)}</tbody></table></div>
       {l.avaliacao.observacoes&&<p><strong>Observações:</strong> {l.avaliacao.observacoes}</p>}
      </article>)}</div>}
+     {modo==="boletim"&&<BoletimConsolidado registros={registrosPedagogicos}/>}
      {modo==="turma"&&<div>
       <div className="pp-table-tools"><label>Buscar na tabela<input type="search" value={buscaTabela} onChange={ev=>{setBuscaTabela(ev.target.value);setPagina(1)}} placeholder="Nome do aluno"/></label><label>Ordenar<select value={ordenacao} onChange={ev=>{setOrdenacao(ev.target.value as typeof ordenacao);setPagina(1)}}><option value="nome">Nome (A–Z)</option><option value="nota_asc">Menor nota</option><option value="nota_desc">Maior nota</option></select></label></div><div className="relatorio-tabela-wrap"><table className="relatorio-tabela"><thead><tr><th>Aluno</th><th>Turma</th><th>Disciplina</th><th>Período</th><th>Data</th><th>Indicador</th><th title="Quantidade de competências que receberam conceito em relação ao total">Competências avaliadas</th></tr></thead><tbody>{linhasPaginadas.map(l=><tr key={l.avaliacao.id}><td>{nomeLegivel(l.aluno)}</td><td>{l.turma.nome} ({l.turma.ano_letivo})</td><td>{l.disciplina}</td><td>{l.avaliacao.periodo_rotulo}</td><td>{dataBR(l.avaliacao.data_avaliacao)}</td><td><NotaComConceito valor={l.nota}/></td><td>{l.avaliadas}/{l.total}</td></tr>)}</tbody></table></div><div className="pp-pagination"><span>Exibindo {linhasPaginadas.length} de {linhasTabela.length} avaliações</span><button className="secondary" disabled={paginaAtual<=1} onClick={()=>setPagina(p=>p-1)}>Anterior</button><span>Página {paginaAtual} de {totalPaginas}</span><button className="secondary" disabled={paginaAtual>=totalPaginas} onClick={()=>setPagina(p=>p+1)}>Próxima</button></div></div>}
+     {modo==="evolucao"&&<GraficoEvolucao registros={registrosPedagogicos}/>}
      {modo==="evolucao"&&<div>{!evolucaoDisponivel&&<p role="status" className="pp-evolution-empty">Evolução disponível a partir de 2 períodos avaliados para o mesmo aluno e disciplina.</p>}<div className="relatorio-tabela-wrap"><table className="relatorio-tabela"><thead><tr><th>Aluno</th><th>Turma</th><th>Disciplina</th><th>Período</th><th>Indicador</th><th>Variação</th></tr></thead><tbody>{[...linhas].sort((a,b)=>a.aluno.localeCompare(b.aluno,"pt-BR")||a.disciplina.localeCompare(b.disciplina,"pt-BR")||criterioPeriodo(a.avaliacao.periodo_rotulo)-criterioPeriodo(b.avaliacao.periodo_rotulo)).map((l,_,arr)=>{
       const anteriores=arr.filter(x=>x.turma.id===l.turma.id&&x.aluno===l.aluno&&x.disciplina===l.disciplina&&criterioPeriodo(x.avaliacao.periodo_rotulo)<criterioPeriodo(l.avaliacao.periodo_rotulo)&&x.nota!==null);
       const anterior=anteriores.at(-1);
