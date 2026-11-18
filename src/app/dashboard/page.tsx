@@ -1,18 +1,62 @@
 "use client";
+import {useCallback,useEffect,useState} from "react";
 import Link from "next/link";
+import type {User} from "@supabase/supabase-js";
 import ProfessorShell from "@/components/ProfessorShell";
+import {getSupabase} from "@/lib/supabase";
 
-export default function Dashboard(){
- return <ProfessorShell>{user=><main className="wrap"><div className="row"><div><h1>Dashboard do Professor</h1><p className="muted">Bem-vindo(a), {String(user.user_metadata?.full_name||user.user_metadata?.name||user.email||"Professor")}.</p></div></div>
- <div className="grid">
- <section className="card"><h2>Escolas</h2><p>Cadastre e gerencie as instituições onde você leciona.</p><Link href="/escolas">Gerenciar escolas</Link></section>
- <section className="card"><h2>Turmas</h2><p>Cadastre turmas, defina os períodos de avaliação e duplique configurações por ano letivo.</p><Link href="/turmas">Gerenciar turmas</Link></section>
- <section className="card"><h2>Alunos</h2><p>Cadastre alunos pelo nome, em lote ou por planilha Excel.</p><Link href="/alunos">Gerenciar alunos</Link></section>
- <section className="card"><h2>Disciplinas e competências</h2><p>Configure disciplinas, importe modelos e defina pesos por turma.</p><Link href="/competencias">Configurar competências</Link></section>
- <section className="card"><h2>Avaliações</h2><p>Lance conceitos individualmente ou por turma e acompanhe o indicador ponderado.</p><Link href="/avaliacoes">Lançar avaliações</Link></section>
- <section className="card"><h2>Relatórios</h2><p>Emita relatórios individuais, de turma e de evolução com base nas avaliações concluídas.</p><Link href="/relatorios">Ver relatórios</Link></section>
- <section className="card"><h2>Design System · Paleta D</h2><p>Conheça a biblioteca visual em demonstração, sem alterar seus dados pedagógicos.</p><Link href="/design-system">Abrir catálogo visual</Link></section>
- </div>
- <p className="muted small">Primeira versão de desenvolvimento. Os módulos ainda não implementados aparecem somente como planejamento.</p>
- </main>}</ProfessorShell>;
+type Totais={escolas:number|null;turmas:number|null;alunos:number|null;avaliacoes:number|null;concluidas:number|null};
+const atalhos=[
+ {href:"/escolas",titulo:"Escolas",texto:"Organize as instituições em que você leciona.",icon:"▥"},
+ {href:"/turmas",titulo:"Turmas",texto:"Configure séries, anos letivos e periodicidade.",icon:"▦"},
+ {href:"/alunos",titulo:"Alunos",texto:"Cadastre estudantes e gerencie matrículas.",icon:"♙"},
+ {href:"/competencias",titulo:"Competências",texto:"Defina habilidades e pesos pedagógicos.",icon:"✧"},
+ {href:"/avaliacoes",titulo:"Avaliações",texto:"Lance conceitos e conclua avaliações.",icon:"☑"},
+ {href:"/relatorios",titulo:"Relatórios",texto:"Consulte indicadores e exporte resultados.",icon:"◴"},
+];
+function Painel({user}:{user:User}){
+ const [totais,setTotais]=useState<Totais>({escolas:null,turmas:null,alunos:null,avaliacoes:null,concluidas:null});
+ const [loading,setLoading]=useState(true);
+ const [erro,setErro]=useState("");
+ const carregar=useCallback(async()=>{
+  setLoading(true);setErro("");
+  const api=getSupabase();
+  const [e,t,a,av,c]=await Promise.all([
+   api.from("escolas").select("id",{count:"exact",head:true}).eq("professor_id",user.id),
+   api.from("turmas").select("id",{count:"exact",head:true}).eq("professor_id",user.id),
+   api.from("alunos").select("id",{count:"exact",head:true}).eq("professor_id",user.id),
+   api.from("avaliacoes").select("id",{count:"exact",head:true}).eq("professor_id",user.id),
+   api.from("avaliacoes").select("id",{count:"exact",head:true}).eq("professor_id",user.id).eq("status","concluida")
+  ]);
+  if([e,t,a,av,c].some(r=>r.error))setErro("Não foi possível carregar todos os indicadores. Tente atualizar a página.");
+  setTotais({escolas:e.error?null:e.count,turmas:t.error?null:t.count,alunos:a.error?null:a.count,avaliacoes:av.error?null:av.count,concluidas:c.error?null:c.count});
+  setLoading(false);
+ },[user.id]);
+ useEffect(()=>{void carregar()},[carregar]);
+ const nome=String(user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split("@")[0]||"Professor");
+ const stats=[
+  {label:"Escolas",value:totais.escolas,icon:"▥",tone:"purple"},
+  {label:"Turmas",value:totais.turmas,icon:"▦",tone:"blue"},
+  {label:"Alunos",value:totais.alunos,icon:"♙",tone:"green"},
+  {label:"Avaliações concluídas",value:totais.concluidas,icon:"☑",tone:"lime"}
+ ];
+ const pendentes=totais.avaliacoes!==null&&totais.concluidas!==null?Math.max(0,totais.avaliacoes-totais.concluidas):null;
+ return <main className="wrap jobie-dashboard">
+  <div className="jobie-welcome"><div><span className="jobie-overline">ACOMPANHAMENTO PEDAGÓGICO</span><h1>Olá, {nome}!</h1><p className="muted">Seu espaço de gestão para acompanhar escolas, turmas, alunos e avaliações.</p></div><Link href="/avaliacoes" className="jobie-action-button">Nova avaliação <span aria-hidden="true">↗</span></Link></div>
+  {erro&&<p role="alert" className="error">{erro}</p>}
+  <div className="jobie-stat-grid">{stats.map(s=><div key={s.label} className={"jobie-stat-card jobie-stat-"+s.tone}><span className="jobie-stat-icon" aria-hidden="true">{s.icon}</span><div><span>{s.label}</span><strong>{loading?"—":s.value===null?"—":s.value}</strong></div></div>)}</div>
+  <div className="jobie-dashboard-columns">
+   <section className="card jobie-progress-card">
+    <div className="row"><div><span className="jobie-section-kicker">SEU ACOMPANHAMENTO</span><h2>Situação das avaliações</h2></div><Link href="/relatorios" className="jobie-text-link">Ver relatórios →</Link></div>
+    <div className="jobie-progress-body"><div className="jobie-progress-circle" style={{background:totais.avaliacoes&&totais.concluidas!==null?`conic-gradient(#5734dc ${Math.round(totais.concluidas/totais.avaliacoes*100)}%,#eae8f2 0)`:"conic-gradient(#eae8f2 100%,#eae8f2 0)"}}><div><strong>{totais.avaliacoes&&totais.concluidas!==null?Math.round(totais.concluidas/totais.avaliacoes*100)+"%":"—"}</strong><small>concluídas</small></div></div><div className="jobie-progress-details"><div><span className="jobie-dot jobie-dot-purple"></span><span>Concluídas</span><strong>{totais.concluidas??"—"}</strong></div><div><span className="jobie-dot jobie-dot-grey"></span><span>Em rascunho</span><strong>{pendentes??"—"}</strong></div><p className="muted small">Os indicadores consideram somente avaliações da sua conta.</p></div></div>
+   </section>
+   <section className="card jobie-todo-card">
+    <span className="jobie-section-kicker">ACESSO RÁPIDO</span><h2>Continuar trabalhando</h2>
+    <div className="jobie-todo-links"><Link href="/avaliacoes"><span className="jobie-shortcut-icon">☑</span><span><strong>Lançar conceitos</strong><small>Ficha individual ou por turma</small></span><span aria-hidden="true">→</span></Link><Link href="/competencias"><span className="jobie-shortcut-icon">✧</span><span><strong>Configurar competências</strong><small>Disciplinas, habilidades e pesos</small></span><span aria-hidden="true">→</span></Link><Link href="/relatorios"><span className="jobie-shortcut-icon">◴</span><span><strong>Emitir relatórios</strong><small>Individual, turma e evolução</small></span><span aria-hidden="true">→</span></Link></div>
+   </section>
+  </div>
+  <div className="jobie-section-heading"><div><span className="jobie-section-kicker">MÓDULOS</span><h2>Gerenciar meu ambiente</h2></div></div>
+  <div className="jobie-module-grid">{atalhos.map(x=><Link className="jobie-module-card" href={x.href} key={x.href}><span className="jobie-module-icon" aria-hidden="true">{x.icon}</span><strong>{x.titulo}</strong><p>{x.texto}</p><span className="jobie-module-arrow">Acessar <span aria-hidden="true">→</span></span></Link>)}</div>
+ </main>
 }
+export default function Dashboard(){return <ProfessorShell>{user=><Painel user={user}/>}</ProfessorShell>}
