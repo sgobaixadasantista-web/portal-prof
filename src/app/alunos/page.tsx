@@ -158,8 +158,8 @@ function CadastroAlunos({user}:{user:User}) {
    else {setAviso(!ativo?"Matrícula reativada.":"Matrícula inativada, histórico preservado.");await carregar();}
    setSalvando(false);
  }
- return <main className="wrap">
-   <div className="row"><div><h1>Cadastro de alunos</h1><p className="muted">Apenas o nome do aluno será cadastrado. O vínculo com a turma é mantido em matrícula separada.</p></div>
+ return <main className="wrap pp-management pp-students">
+   <div className="row pp-page-heading"><div><span className="pp-eyebrow">Gestão de matrículas</span><h1>Cadastro de alunos</h1><p className="muted">Apenas o nome do aluno será cadastrado. O vínculo com a turma é mantido em matrícula separada.</p></div>
      <Link href="/turmas">Gerenciar turmas</Link></div>
    {erro&&<p role="alert" className="error">{erro}</p>}
    {aviso&&<p role="status" className="success">{aviso}</p>}
@@ -173,9 +173,9 @@ function CadastroAlunos({user}:{user:User}) {
    </section>
    <section className="card top-space">
      <h2>Adicionar alunos</h2>
-     <div className="row" style={{justifyContent:"flex-start"}}>
+     <div className="row pp-segmented" role="group" aria-label="Forma de cadastro" style={{justifyContent:"flex-start"}}>
        {([["individual","Individual"],["lista","Em lote"],["excel","Importar Excel"]] as const).map(([v,l])=>
-         <button key={v} type="button" className={modo===v?"":"secondary"} onClick={()=>{setModo(v);setErro("");}}>{l}</button>)}
+         <button key={v} type="button" className={modo===v?"pp-segmented-active":"secondary"} aria-pressed={modo===v} onClick={()=>{setModo(v);setErro("");}}>{l}</button>)}
      </div>
      <form onSubmit={cadastrar}>
        {modo==="individual"&&<label className="field">Nome do aluno<input value={nome} maxLength={200} onChange={e=>setNome(e.target.value)} placeholder="Nome completo" autoComplete="off"/></label>}
@@ -186,9 +186,9 @@ function CadastroAlunos({user}:{user:User}) {
          {arquivo&&<p>{arquivo}: {importados.length} linha(s) encontrada(s).</p>}
        </div>}
        <div className="row" style={{justifyContent:"flex-start"}}>
-         <span className="success small">{validacao.validos.length} novo(s)</span>
-         {validacao.duplicados.length>0&&<span className="muted small">{validacao.duplicados.length} duplicado(s) ignorado(s)</span>}
-         {validacao.invalidos.length>0&&<span className="error small">{validacao.invalidos.length} nome(s) inválido(s)</span>}
+         <span className="pp-chip pp-chip--success">{validacao.validos.length} novo(s)</span>
+         {validacao.duplicados.length>0&&<span className="pp-chip">{validacao.duplicados.length} duplicado(s) ignorado(s)</span>}
+         {validacao.invalidos.length>0&&<span className="pp-chip pp-chip--danger">{validacao.invalidos.length} nome(s) inválido(s)</span>}
        </div>
        <button className="top-space" disabled={salvando||!turma||validacao.validos.length===0||validacao.invalidos.length>0}>
          {salvando?"Salvando alunos...":"Cadastrar aluno(s)"}
@@ -209,7 +209,7 @@ function CadastroAlunos({user}:{user:User}) {
              <button disabled={salvando} onClick={()=>void salvarNome(a.id)}>Salvar</button>
              <button className="secondary" onClick={()=>setEditando(null)}>Cancelar</button>
            </div>
-         </div>:<><div><strong>{a.nome}</strong><p className="muted small">{a.ativo?"Matrícula ativa":"Matrícula inativa"}</p></div>
+         </div>:<><div><strong>{a.nome}</strong><p><span className={a.ativo?"pp-chip pp-chip--success":"pp-chip pp-chip--muted"}>{a.ativo?"Matrícula ativa":"Matrícula inativa"}</span></p></div>
          <div className="row" style={{justifyContent:"flex-end"}}>
            <button className="secondary" disabled={salvando} onClick={()=>{setEditando(a.id);setEditNome(a.nome);}}>Editar</button>
            <button className="secondary" disabled={salvando} onClick={()=>void alternarAtivo(a.id,a.ativo)}>
