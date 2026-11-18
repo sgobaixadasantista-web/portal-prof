@@ -45,6 +45,7 @@ function Painel({user}:{user:User}){
  return <main className="wrap jobie-dashboard">
   <div className="jobie-welcome"><div><span className="jobie-overline">ACOMPANHAMENTO PEDAGÓGICO</span><h1>Olá, {nome}!</h1><p className="muted">Seu espaço de gestão para acompanhar escolas, turmas, alunos e avaliações.</p></div><Link href="/avaliacoes" className="jobie-action-button">Nova avaliação <span aria-hidden="true">↗</span></Link></div>
   {erro&&<p role="alert" className="error">{erro}</p>}
+  {!loading&&pendentes!==null&&pendentes>0&&<div className="jobie-action-required" role="status"><div><strong>{pendentes} avaliação{pendentes===1?"":"ões"} em rascunho</strong><p>Você pode continuar o preenchimento e concluir quando estiver pronto.</p></div><Link href="/avaliacoes">Continuar avaliações →</Link></div>}
   <div className="jobie-stat-grid">{stats.map(s=><div key={s.label} className={"jobie-stat-card jobie-stat-"+s.tone}><span className="jobie-stat-icon" aria-hidden="true"><PortalIcon name={s.icon} size={27}/></span><div><span>{s.label}</span><strong>{loading?"—":s.value===null?"—":s.value}</strong></div></div>)}</div>
   <div className="jobie-dashboard-columns">
    <section className="card jobie-progress-card">
