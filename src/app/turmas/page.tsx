@@ -169,8 +169,8 @@ function CadastroTurmas({ user }: { user: User }) {
     setSalvando(false);
   }
 
-  return <main className="wrap">
-    <div className="row"><div><h1>Minhas turmas</h1><p className="muted">Organize suas turmas por escola e ano letivo.</p></div><span className="muted">{turmas.length} turma(s) cadastrada(s)</span></div>
+  return <main className="wrap pp-management pp-classes">
+    <div className="row pp-page-heading"><div><span className="pp-eyebrow">Organização pedagógica</span><h1>Minhas turmas</h1><p className="muted">Organize suas turmas por escola e ano letivo.</p></div><span className="muted">{turmas.length} turma(s) cadastrada(s)</span></div>
     {erro && <p className="error" role="alert">{erro}</p>}
     {aviso && <p className="success" role="status">{aviso}</p>}
     {escolas.length === 0 && !carregando && <section className="card"><p>Você precisa cadastrar uma escola antes de criar turmas.</p><a href="/escolas">Cadastrar escola</a></section>}
