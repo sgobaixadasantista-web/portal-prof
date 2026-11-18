@@ -24,7 +24,7 @@ const conceitos:{value:Conceito;label:string;nota:number|null}[]=[
  {value:"otimo",label:"Ótimo",nota:10}
 ];
 const valor=(conceito:Conceito)=>conceitos.find(c=>c.value===conceito)?.nota??null;
-const hoje=()=>new Date().toLocaleDateString("en-CA");
+const hoje=()=>{const agora=new Date();const local=new Date(agora.getTime()-agora.getTimezoneOffset()*60000);return local.toISOString().slice(0,10);};
 const estadoVazio=():Estado=>({notas:{},observacoes:"",data:hoje()});
 function indicadores(notas:Record<string,Conceito>,competencias:{id:string;peso:number}[]){
  let soma=0,pesos=0;
@@ -126,27 +126,23 @@ function Tela({user}:{user:User}){
    setErro("Avalie ao menos uma competência antes de concluir.");return;
   }
   setSalvando(id);
-  const api=getSupabase();
-  const campos={professor_id:user.id,matricula_id:id,disciplina_id:disciplinaId,periodo_rotulo:periodo,data_avaliacao:e.data,status:concluir?"concluida":"rascunho",observacoes:e.observacoes.trim()||null,atualizado_em:new Date().toISOString()};
-  // Salvar rascunho primeiro, para não concluir registros com itens incompletos.
-  let avId=atual?.id;
-  if(atual){
-   const {error}=await api.from("avaliacoes").update({...campos,status:"rascunho"}).eq("id",atual.id).eq("professor_id",user.id);
-   if(error){setErro(error.message);setSalvando(null);return;}
-  }else{
-   const {data,error}=await api.from("avaliacoes").insert({...campos,status:"rascunho"}).select("id").single();
-   if(error||!data){setErro(error?.message??"Erro ao criar avaliação.");setSalvando(null);return;}
-   avId=data.id;
-  }
-  const registros=disponiveis.map(c=>({
-   professor_id:user.id,avaliacao_id:avId,competencia_id:c.id,
-   conceito:e.notas[c.id]??"nao_avaliado",peso_aplicado:c.peso,competencia_nome_snapshot:c.nome
-  }));
-  const {error:itemError}=await api.from("avaliacao_itens").upsert(registros,{onConflict:"avaliacao_id,competencia_id"});
-  if(itemError){setErro("Rascunho criado, mas os itens não foram salvos: "+itemError.message);setSalvando(null);await carregar();return;}
-  if(concluir){
-   const {error:finalError}=await api.from("avaliacoes").update({status:"concluida"}).eq("id",avId).eq("professor_id",user.id);
-   if(finalError){setErro("Os itens foram salvos, mas não foi possível concluir: "+finalError.message);setSalvando(null);await carregar();return;}
+  // V0.6: o Postgres valida e grava a avaliação e todos os itens de forma atômica.
+  // A API usa auth.uid() na sessão do professor; não recebe professor_id do cliente.
+  const {error:falha} = await getSupabase().rpc("motor_v06_salvar_avaliacao", {
+   p_matricula_id:id,
+   p_disciplina_id:disciplinaId,
+   p_periodo_rotulo:periodo,
+   p_data_avaliacao:e.data,
+   p_observacoes:e.observacoes.trim()||null,
+   p_itens:disponiveis.map(c=>({
+    competencia_id:c.id,conceito:e.notas[c.id]??"nao_avaliado"
+   })),
+   p_concluir:concluir
+  });
+  if(falha){
+   setErro("Não foi possível salvar a avaliação: "+falha.message);
+   setSalvando(null);
+   return;
   }
   setEdicoes(old=>{const updated={...old};delete updated[id];return updated;});
   await carregar();setSalvando(null);
@@ -216,7 +212,7 @@ function Tela({user}:{user:User}){
     <tbody>{alunosNaTurma.map(m=>{
       const av=avaliacaoDe(m.id),e=estadoDe(m.id);
       return <tr key={m.id}><th>{m.nome}</th>{disponiveis.map(c=><td key={c.id}>{celula(m,c)}</td>)}
-       <td><strong>{formato(indicadores(e.notas,disponiveis))}</strong></td>
+       <td><strong>{formato(indicadorDe(m.id))}</strong></td>
        <td><div className="stack" style={{minWidth:145}}><span className="muted small">{av?.status==="concluida"?"Concluída":av?"Rascunho":"Não iniciada"}</span>
         {av?.status!=="concluida"&&<><button disabled={salvando!==null} onClick={()=>void salvar(m.id,false)}>Salvar</button><button className="secondary" disabled={salvando!==null} onClick={()=>void salvar(m.id,true)}>Concluir</button></>}
        </div></td>
