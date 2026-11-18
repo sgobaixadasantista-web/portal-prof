@@ -10,6 +10,7 @@ export default function Dashboard(){
  <section className="card"><h2>Alunos</h2><p>Cadastre alunos pelo nome, em lote ou por planilha Excel.</p><Link href="/alunos">Gerenciar alunos</Link></section>
  <section className="card"><h2>Disciplinas e competências</h2><p>Configure disciplinas, importe modelos e defina pesos por turma.</p><Link href="/competencias">Configurar competências</Link></section>
  <section className="card"><h2>Avaliações</h2><p>Lance conceitos individualmente ou por turma e acompanhe o indicador ponderado.</p><Link href="/avaliacoes">Lançar avaliações</Link></section>
+ <section className="card"><h2>Relatórios</h2><p>Emita relatórios individuais, de turma e de evolução com base nas avaliações concluídas.</p><Link href="/relatorios">Ver relatórios</Link></section>
  </div>
  <p className="muted small">Primeira versão de desenvolvimento. Os módulos ainda não implementados aparecem somente como planejamento.</p>
  </main>}</ProfessorShell>;
