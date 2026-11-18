@@ -18,7 +18,7 @@ type Modo="individual"|"turma"|"evolucao";
 const nota=(v:number|null)=>v===null?"—":Number(v).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
 const conceito=(v:string)=>({ruim:"Ruim",regular:"Regular",bom:"Bom",otimo:"Ótimo",nao_avaliado:"Não avaliado"} as Record<string,string>)[v]??v;
 const dataBR=(v:string)=>{const [y,m,d]=v.split("-");return d&&m&&y?`${d}/${m}/${y}`:v;};
-const escapeCsv=(v:unknown)=>`"${String(v??"").replace(/"/g,'""')}"`;
+const escapeCsv=(v:unknown)=>{const raw=String(v??"");const safe=/^[\\s]*[=+@-]/.test(raw)?"\u0027"+raw:raw;return `"${safe.replace(/"/g,'""')}"`;};
 function exportarCsv(nome:string,cabecalho:string[],linhas:(string|number|null|undefined)[][]){
  const texto="\uFEFF"+[cabecalho,...linhas].map(l=>l.map(escapeCsv).join(";")).join("\r\n");
  const url=URL.createObjectURL(new Blob([texto],{type:"text/csv;charset=utf-8;"}));
