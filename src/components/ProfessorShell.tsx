@@ -16,29 +16,32 @@ const menu=[
  {href:"/relatorios",label:"Relatórios",icon:"reports"},
  ] satisfies ReadonlyArray<{href:string;label:string;icon:PortalIconName}>;
 
+let cachedUser:User|null=null;
+
 export default function ProfessorShell({children}:{children:(user:User)=>React.ReactNode}){
- const [user,setUser]=useState<User|null>(null);
- const [loading,setLoading]=useState(true);
+ const [user,setUser]=useState<User|null>(cachedUser);
+ const [loading,setLoading]=useState(!cachedUser);
  const [menuOpen,setMenuOpen]=useState(false);
  const [signingOut,setSigningOut]=useState(false);
+ const [accountOpen,setAccountOpen]=useState(false);
  const pathname=usePathname();
  const router=useRouter();
  useEffect(()=>{
   let mounted=true;const client=getSupabase();
   const {data:{subscription}}=client.auth.onAuthStateChange((_,session)=>{
-   if(!mounted)return;setUser(session?.user??null);
+   if(!mounted)return;cachedUser=session?.user??null;setUser(cachedUser);
    if(!session?.user)router.replace("/login");
   });
   client.auth.getUser().then(({data,error})=>{
    if(!mounted)return;
-   if(error||!data.user){router.replace("/login");setUser(null);}
-   else setUser(data.user);
+   if(error||!data.user){cachedUser=null;router.replace("/login");setUser(null);}
+   else {cachedUser=data.user;setUser(data.user);}
    setLoading(false);
   });
   return ()=>{mounted=false;subscription.unsubscribe();};
  },[router]);
- useEffect(()=>setMenuOpen(false),[pathname]);
- if(loading)return <main className="wrap">Carregando conta...</main>;
+ useEffect(()=>{setMenuOpen(false);setAccountOpen(false);},[pathname]);
+ if(loading&&!user)return <main className="jobie-auth-loading"><div className="jobie-auth-loading-side"/><div className="jobie-auth-loading-main"><div className="jobie-loading-bar"/><div className="jobie-loading-card"/><div className="jobie-loading-card"/></div></main>;
  if(!user)return <main className="wrap">Redirecionando para login...</main>;
  const nome=String(user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split("@")[0]||"Professor");
  const letra=nome.trim().charAt(0).toUpperCase()||"P";
@@ -47,7 +50,7 @@ export default function ProfessorShell({children}:{children:(user:User)=>React.R
   if(signingOut)return;setSigningOut(true);
   const {error}=await getSupabase().auth.signOut();
   if(error){setSigningOut(false);window.alert("Não foi possível sair: "+error.message);return;}
-  router.replace("/login");
+  cachedUser=null;router.replace("/login");
  }
  return <div className="jobie-shell">
   {menuOpen&&<button type="button" className="jobie-backdrop" aria-label="Fechar navegação" onClick={()=>setMenuOpen(false)}/>}
@@ -61,10 +64,6 @@ export default function ProfessorShell({children}:{children:(user:User)=>React.R
       <span className="jobie-menu-icon" aria-hidden="true"><PortalIcon name={m.icon} size={21}/></span><span>{m.label}</span>
     </Link>)}
    </nav>
-   <div className="jobie-sidebar-bottom">
-    <Link href="/design-system" className={"jobie-menu-item jobie-lab"+(pathname==="/design-system"?" is-active":"")}><span className="jobie-menu-icon" aria-hidden="true"><PortalIcon name="design" size={21}/></span><span>Design System</span></Link>
-    <p>Portal do Professor <span>Interface inspirada no Jobie</span></p>
-   </div>
   </aside>
   <div className="jobie-workspace">
    <header className="jobie-topbar">
@@ -73,12 +72,13 @@ export default function ProfessorShell({children}:{children:(user:User)=>React.R
      <h1 className="jobie-topbar-current-title">{tituloPagina}</h1>
     </div>
     <div className="jobie-topbar-end">
-     <Link href="/relatorios" className="jobie-topbar-link"><PortalIcon name="reports" size={18}/><span>Relatórios</span></Link>
-     <div className="jobie-topbar-separator" aria-hidden="true"/>
-     <div className="jobie-account">
-      <span className="jobie-avatar" aria-hidden="true">{letra}</span>
-      <div className="jobie-account-details"><strong title={nome}>{nome}</strong><small>Professor(a)</small></div>
-      <button type="button" className="jobie-exit" disabled={signingOut} onClick={()=>void sair()}>{signingOut?"Saindo...":"Sair"}</button>
+     <div className="jobie-account-menu">
+      <button type="button" className="jobie-profile-trigger" aria-expanded={accountOpen} aria-label="Opções da minha conta" onClick={()=>setAccountOpen(x=>!x)}>
+       <span className="jobie-avatar" aria-hidden="true">{letra}</span>
+       <span className="jobie-account-details"><strong title={nome}>{nome}</strong><small>Professor(a)</small></span>
+       <span aria-hidden="true" className="jobie-profile-chevron">⌄</span>
+      </button>
+      {accountOpen&&<div className="jobie-account-dropdown"><div className="jobie-dropdown-email">{user.email}</div><button type="button" disabled={signingOut} onClick={()=>void sair()}>{signingOut?"Saindo...":"Sair da conta"}</button></div>}
      </div>
     </div>
    </header>
