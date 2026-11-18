@@ -42,7 +42,9 @@ export default function ProfessorShell({children}:{children:(user:User)=>React.R
  if(!user)return <main className="wrap">Redirecionando para login...</main>;
  const nome=String(user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split("@")[0]||"Professor");
  const letra=nome.trim().charAt(0).toUpperCase()||"P";
- const atual=menu.find(m=>m.href===pathname)?.label??(pathname==="/design-system"?"Design System":"Portal do Professor");
+ const secao=menu.find(m=>m.href===pathname);
+ const atual=secao?.label??(pathname==="/design-system"?"Design System":"Portal do Professor");
+ const iconAtual:PortalIconName=secao?.icon??"design";
  async function sair(){
   if(signingOut)return;setSigningOut(true);
   const {error}=await getSupabase().auth.signOut();
@@ -69,10 +71,22 @@ export default function ProfessorShell({children}:{children:(user:User)=>React.R
   <div className="jobie-workspace">
    <header className="jobie-topbar">
     <div className="jobie-topbar-start">
-     <button type="button" className="jobie-menu-trigger" aria-label={menuOpen?"Fechar menu":"Abrir menu"} aria-expanded={menuOpen} onClick={()=>setMenuOpen(v=>!v)}><span aria-hidden="true"><PortalIcon name="menu" size={22}/></span></button>
-     <div className="jobie-topbar-title"><span className="jobie-breadcrumb">Portal do Professor /</span><strong>{atual}</strong></div>
+     <button type="button" className="jobie-menu-trigger" aria-label={menuOpen?"Fechar menu":"Abrir menu"} aria-expanded={menuOpen} onClick={()=>setMenuOpen(v=>!v)}><PortalIcon name="menu" size={22}/></button>
+     <span className="jobie-topbar-page-icon" aria-hidden="true"><PortalIcon name={iconAtual} size={22}/></span>
+     <div className="jobie-topbar-title">
+      <div className="jobie-topbar-crumb"><Link href="/dashboard">Portal do Professor</Link><span aria-hidden="true">/</span><span aria-current="page">{atual}</span></div>
+      <strong>{atual}</strong>
+     </div>
     </div>
-    <div className="jobie-account"><span className="jobie-avatar" aria-hidden="true">{letra}</span><div className="jobie-account-details"><strong>{nome}</strong><small>Minha conta</small></div><button type="button" className="jobie-exit" disabled={signingOut} onClick={()=>void sair()}>{signingOut?"Saindo...":"Sair"}</button></div>
+    <div className="jobie-topbar-end">
+     <Link href="/relatorios" className="jobie-topbar-link"><PortalIcon name="reports" size={18}/><span>Relatórios</span></Link>
+     <div className="jobie-topbar-separator" aria-hidden="true"/>
+     <div className="jobie-account">
+      <span className="jobie-avatar" aria-hidden="true">{letra}</span>
+      <div className="jobie-account-details"><strong title={nome}>{nome}</strong><small>Professor(a)</small></div>
+      <button type="button" className="jobie-exit" disabled={signingOut} onClick={()=>void sair()}>{signingOut?"Saindo...":"Sair"}</button>
+     </div>
+    </div>
    </header>
    <div className="jobie-content">{children(user)}</div>
   </div>
