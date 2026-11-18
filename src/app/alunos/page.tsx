@@ -92,8 +92,8 @@ function CadastroAlunos({user}:{user:User}) {
    if(!file.name.toLowerCase().endsWith(".xlsx")){setErro("Utilize uma planilha .xlsx.");return;}
    if(file.size>2*1024*1024){setErro("Arquivo muito grande. Limite: 2 MB.");return;}
    try{
-     const {default:readExcelFile}=await import("read-excel-file/browser");
-     const rows=await readExcelFile(file);
+     const {readSheet}=await import("read-excel-file/browser");
+     const rows=await readSheet(file, {sheet: 1});
      if(rows.length>1000)throw new Error("A planilha ultrapassa 1.000 linhas.");
      const raw=rows.map(row=>String(row[0]??"").trim()).filter(Boolean);
      if(raw.length && ["nome","nome do aluno","aluno","alunos"].includes(normalizar(raw[0])))raw.shift();
