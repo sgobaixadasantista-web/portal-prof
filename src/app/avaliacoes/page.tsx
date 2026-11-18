@@ -26,6 +26,7 @@ const conceitos:{value:Conceito;label:string;nota:number|null}[]=[
  {value:"otimo",label:"Ótimo",nota:10}
 ];
 const valor=(conceito:Conceito)=>conceitos.find(c=>c.value===conceito)?.nota??null;
+const rotuloConceito=(conceito:Conceito|undefined)=>conceito===undefined?"Não existia":conceitos.find(c=>c.value===conceito)?.label??conceito;
 const hoje=()=>{const agora=new Date();const local=new Date(agora.getTime()-agora.getTimezoneOffset()*60000);return local.toISOString().slice(0,10);};
 const estadoVazio=():Estado=>({notas:{},observacoes:"",data:hoje()});
 function indicadores(notas:Record<string,Conceito>,competencias:{id:string;peso:number}[]){
@@ -173,6 +174,7 @@ function Tela({user}:{user:User}){
   }
   setSalvando(null);
  };
+ const identificarResponsavel=(id:string|null)=>id===null?"Não identificado":id===user.id?(user.email||user.user_metadata?.full_name||"ID: "+id):"ID: "+id;
  const historico=(av:Avaliacao|undefined)=>{
   if(!av)return null;
   const registros=revisoes.filter(r=>r.avaliacao_id===av.id);
@@ -188,13 +190,13 @@ function Tela({user}:{user:User}){
    const observacoesAlteradas=(r.snapshot_antes?.avaliacao?.observacoes??"")!==(r.snapshot_depois?.avaliacao?.observacoes??"");
    return <div className="turma-item" key={r.id}><div>
     <strong>{r.encerrada_em?"Revisão concluída":"Revisão em andamento"}</strong>
-    <p className="muted small">Reaberta em {new Date(r.reaberta_em).toLocaleString("pt-BR")} · Responsável: {r.autor_id===user.id?"Professor autenticado":r.autor_id}</p>
+    <p className="muted small">Reaberta em {new Date(r.reaberta_em).toLocaleString("pt-BR")} · Responsável: {identificarResponsavel(r.autor_id)}</p>
     <p className="small"><strong>Motivo:</strong> {r.motivo}</p>
-    {r.encerrada_em&&<p className="muted small">Concluída em {new Date(r.encerrada_em).toLocaleString("pt-BR")} · Por: {r.encerrada_por===user.id?"Professor autenticado":(r.encerrada_por??"Não identificado")}</p>}
+    {r.encerrada_em&&<p className="muted small">Concluída em {new Date(r.encerrada_em).toLocaleString("pt-BR")} · Por: {identificarResponsavel(r.encerrada_por)}</p>}
     {r.encerrada_em&&mudancas.length===0&&!observacoesAlteradas&&<p className="small">Nenhuma alteração de conceito, peso ou observações identificada.</p>}
     {r.encerrada_em&&mudancas.map(i=>{
      const original=antes.find(a=>a.competencia_id===i.competencia_id);
-     return <p className="small" key={i.competencia_id}>{i.competencia_nome_snapshot}: {original?.conceito??"Não existia"} → {i.conceito}{original&&Number(original.peso_aplicado)!==Number(i.peso_aplicado)?" (peso "+original.peso_aplicado+" → "+i.peso_aplicado+")":""}</p>;
+     return <p className="small" key={i.competencia_id}>{i.competencia_nome_snapshot}: {rotuloConceito(original?.conceito)} → {rotuloConceito(i.conceito)}{original&&Number(original.peso_aplicado)!==Number(i.peso_aplicado)?" (peso "+original.peso_aplicado+" → "+i.peso_aplicado+")":""}</p>;
     })}
     {r.encerrada_em&&observacoesAlteradas&&<p className="small">Observações pedagógicas alteradas (conteúdo preservado nos snapshots).</p>}
    </div></div>;
