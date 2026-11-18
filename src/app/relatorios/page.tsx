@@ -121,14 +121,14 @@ function Relatorios({user}:{user:User}){
  };
  const imprimir=()=>window.print();
 
- return <main className="wrap relatorios">
-  <div className="row relatorios-cabecalho"><div><h1>Relatórios e indicadores</h1><p className="muted">Somente avaliações concluídas da sua conta. Indicadores calculados pelo motor pedagógico V0.6.</p></div><button className="secondary" onClick={()=>void carregar()} disabled={carregando}>Atualizar dados</button></div>
+ return <main className="wrap relatorios pp-pedagogical pp-reports">
+  <div className="row relatorios-cabecalho"><div><span className="pp-ped-eyebrow">Resultados pedagógicos</span><h1>Relatórios e indicadores</h1><p className="muted">Somente avaliações concluídas da sua conta. Indicadores calculados pelo motor pedagógico V0.6.</p></div><button className="secondary" onClick={()=>void carregar()} disabled={carregando}>Atualizar dados</button></div>
   {erro&&<p className="error" role="alert">{erro}</p>}
-  <section className="card filtros-relatorio">
-   <div className="row" style={{justifyContent:"flex-start"}}>
-    <button className={modo==="individual"?"":"secondary"} onClick={()=>{setModo("individual");setPeriodo("");}}>Individual</button>
-    <button className={modo==="turma"?"":"secondary"} onClick={()=>setModo("turma")}>Turma</button>
-    <button className={modo==="evolucao"?"":"secondary"} onClick={()=>{setModo("evolucao");setPeriodo("");}}>Evolução</button>
+  <section className="card filtros-relatorio pp-filter-card">
+   <div className="row pp-ped-tabs" role="group" aria-label="Tipo de relatório" style={{justifyContent:"flex-start"}}>
+    <button type="button" aria-pressed={modo==="individual"} className={modo==="individual"?"pp-ped-tab-active":"secondary"} onClick={()=>{setModo("individual");setPeriodo("");}}>Individual</button>
+    <button type="button" aria-pressed={modo==="turma"} className={modo==="turma"?"pp-ped-tab-active":"secondary"} onClick={()=>setModo("turma")}>Turma</button>
+    <button type="button" aria-pressed={modo==="evolucao"} className={modo==="evolucao"?"pp-ped-tab-active":"secondary"} onClick={()=>{setModo("evolucao");setPeriodo("");}}>Evolução</button>
    </div>
    <div className="form-grid">
     <label className="field">Escola<select value={escolaId} onChange={ev=>{setEscolaId(ev.target.value);setTurmaId("");setAlunoId("");setPeriodo("");}}><option value="">Todas</option>{escolasOrdenadas.map(e=><option key={e.id} value={e.id}>{e.nome}</option>)}</select></label>
@@ -140,7 +140,7 @@ function Relatorios({user}:{user:User}){
   </section>
   {carregando?<section className="card top-space">Carregando relatórios...</section>:<div className="relatorio-impressao">
    <div className="row top-space relatorio-acoes"><span className="muted small">Exportações utilizam exclusivamente os dados filtrados e concluídos.</span><div className="row" style={{justifyContent:"flex-end"}}><button className="secondary" disabled={!linhas.length} onClick={excel}>Exportar Excel (CSV)</button><button disabled={!linhas.length} onClick={imprimir}>Salvar PDF / Imprimir</button></div></div>
-   <section className="card top-space">
+   <section className="card top-space pp-report-document">
     <div className="relatorio-capa"><h2>{titulo}</h2><p className="muted small">{nomeEscola} · {nomeTurma} · {nomeDisciplina} · {alunoEscolhido}{periodo?" · "+periodo:""}</p><p className="muted small">Emitido em {new Date().toLocaleString("pt-BR")} · Conta: {user.email??"Professor autenticado"}</p></div>
     <div className="indicadores-resumo">
      <div><span className="muted small">Avaliações concluídas</span><strong>{linhas.length}</strong></div>
