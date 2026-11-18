@@ -96,6 +96,15 @@ function Tela({user}:{user:User}){
  },[turma]);
  useEffect(()=>{if(rotulos.length&&!rotulos.includes(periodo)){setPeriodo(rotulos[0]);setEdicoes({});}},[rotulos,periodo]);
  const avaliacaoDe=(id:string)=>avaliacoes.find(a=>a.matricula_id===id&&a.disciplina_id===disciplinaId&&a.periodo_rotulo===periodo);
+ const indicadorDe=(id:string)=> {
+  const av=avaliacoes.find(a=>a.matricula_id===id&&a.disciplina_id===disciplinaId&&a.periodo_rotulo===periodo);
+  if(av?.status==="concluida") {
+   const salvos=itens.filter(item=>item.avaliacao_id===av.id);
+   return indicadores(Object.fromEntries(salvos.map(item=>[item.competencia_id,item.conceito])),salvos.map(item=>({id:item.competencia_id,peso:Number(item.peso_aplicado)})));
+  }
+  return indicadores(estadoDe(id).notas,disponiveis);
+ };
+
  const estadoDe=(id:string):Estado=>{
   if(edicoes[id])return edicoes[id];
   const av=avaliacaoDe(id);
@@ -192,7 +201,7 @@ function Tela({user}:{user:User}){
       <div style={{minWidth:170}}>{celula(m,c)}</div>
      </div>)}</div>
      <label className="field">Observações pedagógicas (opcional)<textarea rows={3} maxLength={2000} value={e.observacoes} disabled={concl} onChange={ev=>editar(m.id,{observacoes:ev.target.value})}/></label>
-     <h2>Indicador: {formato(indicadores(e.notas,disponiveis))} / 10,0</h2>
+     <h2>Indicador: {formato(indicadorDe(m.id))} / 10,0</h2>
      {!concl&&<div className="row" style={{justifyContent:"flex-start"}}>
       <button disabled={salvando!==null} onClick={()=>void salvar(m.id,false)}>Salvar rascunho</button>
       <button disabled={salvando!==null} onClick={()=>void salvar(m.id,true)}>Concluir avaliação</button>
