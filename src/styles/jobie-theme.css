@@ -165,3 +165,132 @@
 .jobie-menu-item.is-active .jobie-menu-icon svg{stroke-width:2.1}
 .jobie-stat-icon svg,.jobie-shortcut-icon svg,.jobie-module-icon svg{display:block;flex-shrink:0;stroke:currentColor}
 @media(prefers-reduced-motion:reduce){.jobie-menu-icon svg{transition:none!important}}
+
+/* Jobie sidebar refinement — referência visual aprovada (18/11/2026).
+   Navegação em cápsulas independentes, logo integrado e topo contido. */
+.jobie-shell .jobie-sidebar{
+ width:250px;
+ padding:0 0 22px;
+ background:#4219a8;
+ color:#efe9ff;
+ overflow-y:auto;
+ scrollbar-width:thin;
+ scrollbar-color:#7254c6 #4219a8;
+}
+.jobie-shell .jobie-logo{
+ margin:0 0 18px;
+ padding:28px 25px 23px;
+ min-height:125px;
+ border-radius:0 0 31px 0;
+ background:#4219a8;
+ color:#fff;
+ gap:13px;
+ font-size:21px;
+ font-weight:800;
+ font-style:normal;
+ letter-spacing:-.045em;
+ white-space:nowrap;
+}
+.jobie-shell .jobie-logo-mark{
+ width:46px;
+ height:46px;
+ background:#fff;
+ color:#4219a8;
+ border-radius:15px;
+ font-size:29px;
+ font-weight:900;
+ transform:rotate(-8deg);
+ box-shadow:0 8px 22px #250b6a2e;
+}
+.jobie-shell .jobie-logo-mark::first-letter{transform:rotate(8deg)}
+.jobie-shell .jobie-logo small{
+ font-size:11px;
+ font-style:normal;
+ letter-spacing:.01em;
+ color:#e5dcff;
+ font-weight:600;
+}
+.jobie-shell .jobie-menu{
+ padding:0 15px;
+ gap:7px;
+}
+.jobie-shell .jobie-menu-item{
+ border-radius:999px;
+ min-height:52px;
+ padding:12px 17px;
+ gap:14px;
+ color:#f0eaff;
+ font-size:13px;
+ line-height:1.3;
+ font-weight:600;
+ transition:background .17s ease,color .17s ease,box-shadow .17s ease;
+}
+.jobie-shell .jobie-menu-item:hover:not(.is-active){
+ background:rgba(255,255,255,.13);
+ color:#fff;
+}
+.jobie-shell .jobie-menu-item.is-active{
+ background:#fff;
+ color:#3e179f;
+ font-weight:750;
+ box-shadow:0 7px 17px #230f6826;
+}
+.jobie-shell .jobie-menu-item.is-active:hover{background:#fff;color:#3e179f}
+.jobie-shell .jobie-menu-icon{
+ width:23px;
+ height:23px;
+}
+.jobie-shell .jobie-sidebar-bottom{
+ margin-top:auto;
+ padding:16px 15px 0;
+}
+.jobie-shell .jobie-sidebar-bottom .jobie-lab{min-height:48px}
+.jobie-shell .jobie-sidebar-bottom p{
+ padding:17px 17px 0;
+ margin:0;
+ color:#d8c9ff;
+}
+.jobie-shell .jobie-workspace{
+ margin-left:250px;
+ width:calc(100% - 250px);
+ background:#f6f6f8;
+ border-radius:28px 0 0 0;
+}
+.jobie-shell .jobie-topbar{
+ height:79px;
+ padding:13px clamp(18px,2.6vw,39px);
+ background:#f6f6f8;
+ border-radius:28px 0 0 0;
+}
+.jobie-shell .jobie-topbar-title strong{
+ font-size:17px;
+}
+.jobie-shell .jobie-menu-trigger{
+ display:none;
+}
+.jobie-shell .jobie-content>.wrap{
+ padding-top:14px;
+}
+@media(max-width:900px){
+ .jobie-shell .jobie-sidebar{
+  width:250px;
+ }
+ .jobie-shell .jobie-workspace{
+  width:100%;
+  margin-left:0;
+  border-radius:0;
+ }
+ .jobie-shell .jobie-topbar{border-radius:0}
+ .jobie-shell .jobie-menu-trigger{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+ }
+}
+@media(max-width:600px){
+ .jobie-shell .jobie-topbar{height:72px;padding:11px 15px}
+}
+@media print{
+ .jobie-shell .jobie-workspace{margin-left:0!important;width:100%!important;border-radius:0!important}
+ .jobie-shell .jobie-menu-trigger{display:none!important}
+}
