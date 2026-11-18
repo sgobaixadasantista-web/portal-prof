@@ -15,6 +15,19 @@ type Modo = "individual" | "lista" | "excel";
 
 const normalizar = (nome:string) => nome.normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim().replace(/\s+/g," ").toLocaleLowerCase("pt-BR");
 const limparNome = (nome:string) => nome.trim().replace(/\s+/g," ");
+/** Sugestão de possível duplicidade; não bloqueia homônimos legítimos. */
+const nomesSemelhantes=(a:string,b:string)=>{
+ const x=normalizar(a),y=normalizar(b);
+ if(x===y||x.length<6||y.length<6)return false;
+ const menor=x.length<y.length?x:y;
+ const maior=x.length>=y.length?x:y;
+ if(maior.startsWith(menor+" "))return true;
+ const ta=new Set(x.split(" ").filter(t=>t.length>2));
+ const tb=new Set(y.split(" ").filter(t=>t.length>2));
+ const comuns=[...ta].filter(t=>tb.has(t)).length;
+ return comuns>=2&&comuns/Math.min(ta.size,tb.size)>=.8;
+};
+
 const MAX_ALUNOS = 300;
 
 function CadastroAlunos({user}:{user:User}) {
@@ -85,6 +98,15 @@ function CadastroAlunos({user}:{user:User}) {
    return {validos,duplicados,invalidos};
  // eslint-disable-next-line react-hooks/exhaustive-deps
  },[modo,nome,lista,importados,alunos,matriculas,turmaId]);
+
+ const sugestoes=useMemo(()=>{
+  const existentes=matriculas.filter(m=>m.turma_id===turmaId).map(m=>alunos.find(a=>a.id===m.aluno_id)?.nome).filter((n):n is string=>!!n);
+  return validacao.validos.flatMap((candidato,i)=>{
+   const comparaveis=[...existentes,...validacao.validos.slice(0,i)];
+   return comparaveis.filter(n=>nomesSemelhantes(candidato,n)).slice(0,2).map(n=>({candidato,semelhante:n}));
+  }).slice(0,8);
+ },[validacao.validos,matriculas,alunos,turmaId]);
+ const alertasEdicao=useMemo(()=>registros.filter(a=>a.id!==editando&&nomesSemelhantes(editNome,a.nome)).slice(0,3),[registros,editNome,editando]);
 
  async function lerExcel(event:React.ChangeEvent<HTMLInputElement>) {
    const file=event.target.files?.[0];setErro("");setAviso("");
@@ -185,6 +207,11 @@ function CadastroAlunos({user}:{user:User}) {
          <p className="muted small">Use a primeira coluna para os nomes; cabeçalho “Nome” é opcional. O arquivo é lido no navegador e somente os nomes são cadastrados.</p>
          {arquivo&&<p>{arquivo}: {importados.length} linha(s) encontrada(s).</p>}
        </div>}
+       {sugestoes.length>0&&<div role="status" className="pp-student-duplicates">
+        <strong>Atenção: nomes parecidos na turma</strong>
+        <p>Confira antes de cadastrar. Nomes semelhantes não são bloqueados automaticamente.</p>
+        <ul>{sugestoes.map((x,i)=><li key={i}><strong>{x.candidato}</strong> é semelhante a <strong>{x.semelhante}</strong></li>)}</ul>
+       </div>}
        <div className="row" style={{justifyContent:"flex-start"}}>
          <span className="pp-chip pp-chip--success">{validacao.validos.length} novo(s)</span>
          {validacao.duplicados.length>0&&<span className="pp-chip">{validacao.duplicados.length} duplicado(s) ignorado(s)</span>}
@@ -205,6 +232,7 @@ function CadastroAlunos({user}:{user:User}) {
        <div className="turma-lista">{registros.map(a=><div key={a.id} className="turma-item">
          {editando===a.id?<div style={{flex:1}}>
            <label className="field">Editar nome<input value={editNome} maxLength={200} onChange={e=>setEditNome(e.target.value)}/></label>
+           {alertasEdicao.length>0&&<p role="status" className="pp-student-duplicates">Nome semelhante a: {alertasEdicao.map(a=>a.nome).join(", ")}. Confira antes de salvar.</p>}
            <div className="row" style={{justifyContent:"flex-start"}}>
              <button disabled={salvando} onClick={()=>void salvarNome(a.id)}>Salvar</button>
              <button className="secondary" onClick={()=>setEditando(null)}>Cancelar</button>
