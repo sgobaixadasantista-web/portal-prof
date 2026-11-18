@@ -156,3 +156,12 @@
  .jobie-shell .card{box-shadow:none!important}
 }
 @media(prefers-reduced-motion:reduce){.jobie-module-card,.jobie-sidebar,.jobie-menu-item{transition:none!important}}
+
+/* Ícones SVG padronizados — menu, cartões e atalhos */
+.jobie-menu-icon{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:initial}
+.jobie-menu-icon svg{width:21px;height:21px;stroke:currentColor;stroke-width:1.9;transition:transform .16s ease}
+.jobie-menu-item{gap:15px;min-height:53px}
+.jobie-menu-item:hover .jobie-menu-icon svg{transform:translateX(1px)}
+.jobie-menu-item.is-active .jobie-menu-icon svg{stroke-width:2.1}
+.jobie-stat-icon svg,.jobie-shortcut-icon svg,.jobie-module-icon svg{display:block;flex-shrink:0;stroke:currentColor}
+@media(prefers-reduced-motion:reduce){.jobie-menu-icon svg{transition:none!important}}
