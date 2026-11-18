@@ -14,6 +14,8 @@ type Competencia={id:string;nome:string;disciplina_id:string;ativa:boolean};
 type Vinculo={id:string;turma_id:string;competencia_id:string;peso:number;ativa:boolean};
 type Avaliacao={id:string;matricula_id:string;disciplina_id:string;periodo_rotulo:string;data_avaliacao:string;status:"rascunho"|"concluida";observacoes:string|null};
 type Item={avaliacao_id:string;competencia_id:string;conceito:Conceito;peso_aplicado:number;competencia_nome_snapshot:string};
+type Revisao={id:string;avaliacao_id:string;autor_id:string;motivo:string;reaberta_em:string;encerrada_em:string|null;encerrada_por:string|null;snapshot_antes:{avaliacao?:{observacoes?:string|null;data_avaliacao?:string};itens?:ItemSnapshot[]};snapshot_depois:{avaliacao?:{observacoes?:string|null;data_avaliacao?:string};itens?:ItemSnapshot[]}|null};
+type ItemSnapshot={competencia_id:string;competencia_nome_snapshot:string;conceito:Conceito;peso_aplicado:number};
 type Conceito="nao_avaliado"|"ruim"|"regular"|"bom"|"otimo";
 type Estado={notas:Record<string,Conceito>;observacoes:string;data:string};
 const conceitos:{value:Conceito;label:string;nota:number|null}[]=[
@@ -46,6 +48,10 @@ function Tela({user}:{user:User}){
  const [vinculos,setVinculos]=useState<Vinculo[]>([]);
  const [avaliacoes,setAvaliacoes]=useState<Avaliacao[]>([]);
  const [itens,setItens]=useState<Item[]>([]);
+ const [revisoes,setRevisoes]=useState<Revisao[]>([]);
+ const [revisoesDisponiveis,setRevisoesDisponiveis]=useState(true);
+ const [reabrindo,setReabrindo]=useState<string|null>(null);
+ const [motivo,setMotivo]=useState("");
  const [turmaId,setTurmaId]=useState("");
  const [disciplinaId,setDisciplinaId]=useState("");
  const [matriculaId,setMatriculaId]=useState("");
@@ -59,7 +65,7 @@ function Tela({user}:{user:User}){
  const carregar=useCallback(async()=>{
   setCarregando(true);
   const api=getSupabase();
-  const [e,t,d,a,m,c,v,avs,its]=await Promise.all([
+  const [e,t,d,a,m,c,v,avs,its,revs]=await Promise.all([
    api.from("escolas").select("id,nome").eq("professor_id",user.id),
    api.from("turmas").select("id,nome,ano_letivo,ano_escolar,escola_id,periodicidade").eq("professor_id",user.id).order("ano_letivo",{ascending:false}),
    api.from("disciplinas").select("id,nome").eq("professor_id",user.id).order("nome"),
@@ -68,7 +74,8 @@ function Tela({user}:{user:User}){
    api.from("competencias").select("id,nome,disciplina_id,ativa").eq("professor_id",user.id),
    api.from("turma_competencias").select("id,turma_id,competencia_id,peso,ativa").eq("professor_id",user.id),
    api.from("avaliacoes").select("id,matricula_id,disciplina_id,periodo_rotulo,data_avaliacao,status,observacoes").eq("professor_id",user.id),
-   api.from("avaliacao_itens").select("avaliacao_id,competencia_id,conceito,peso_aplicado,competencia_nome_snapshot").eq("professor_id",user.id)
+   api.from("avaliacao_itens").select("avaliacao_id,competencia_id,conceito,peso_aplicado,competencia_nome_snapshot").eq("professor_id",user.id),
+   api.from("avaliacao_revisoes").select("id,avaliacao_id,autor_id,motivo,reaberta_em,encerrada_em,encerrada_por,snapshot_antes,snapshot_depois").eq("professor_id",user.id).order("reaberta_em",{ascending:false})
   ]);
   const falha=[e,t,d,a,m,c,v,avs,its].find(r=>r.error);
   if(falha?.error)setErro(falha.error.message);
@@ -76,6 +83,8 @@ function Tela({user}:{user:User}){
    setEscolas(e.data??[]);setTurmas(t.data??[]);setDisciplinas(d.data??[]);
    setAlunos(a.data??[]);setMatriculas(m.data??[]);setCompetencias(c.data??[]);
    setVinculos(v.data??[]);setAvaliacoes((avs.data??[]) as Avaliacao[]);setItens((its.data??[]) as Item[]);
+   setRevisoesDisponiveis(!revs.error);
+   setRevisoes(revs.error?[]:(revs.data??[]) as Revisao[]);
   }
   setCarregando(false);
  },[user.id]);
@@ -148,6 +157,49 @@ function Tela({user}:{user:User}){
   await carregar();setSalvando(null);
   setAviso(concluir?"Avaliação concluída.":"Rascunho salvo.");
  };
+ const reabrir=async(av:Avaliacao)=>{
+  if(motivo.trim().length<10||motivo.trim().length>1000){
+   setErro("Informe um motivo com 10 a 1000 caracteres.");return;
+  }
+  if(!window.confirm("Reabrir esta avaliação concluída para revisão? A versão anterior ficará preservada na auditoria."))return;
+  setErro("");setAviso("");setSalvando(av.matricula_id);
+  const {error}=await getSupabase().rpc("motor_v061_reabrir_avaliacao",{
+   p_avaliacao_id:av.id,p_motivo:motivo.trim()
+  });
+  if(error){setErro("Não foi possível reabrir: "+error.message);}
+  else{
+   setReabrindo(null);setMotivo("");setEdicoes({});
+   await carregar();setAviso("Avaliação reaberta como rascunho. A versão anterior foi registrada na auditoria.");
+  }
+  setSalvando(null);
+ };
+ const historico=(av:Avaliacao|undefined)=>{
+  if(!av)return null;
+  const registros=revisoes.filter(r=>r.avaliacao_id===av.id);
+  if(!revisoesDisponiveis)return <p className="muted small">Histórico de revisões disponível após aplicar a migração V0.6.1 no Supabase.</p>;
+  if(!registros.length)return <p className="muted small">Nenhuma reabertura registrada para esta avaliação.</p>;
+  return <div className="turma-lista">{registros.map(r=>{
+   const antes=r.snapshot_antes?.itens??[];
+   const depois=r.snapshot_depois?.itens??[];
+   const mudancas=depois.filter(i=>{
+    const original=antes.find(a=>a.competencia_id===i.competencia_id);
+    return !original||original.conceito!==i.conceito||Number(original.peso_aplicado)!==Number(i.peso_aplicado);
+   });
+   const observacoesAlteradas=(r.snapshot_antes?.avaliacao?.observacoes??"")!==(r.snapshot_depois?.avaliacao?.observacoes??"");
+   return <div className="turma-item" key={r.id}><div>
+    <strong>{r.encerrada_em?"Revisão concluída":"Revisão em andamento"}</strong>
+    <p className="muted small">Reaberta em {new Date(r.reaberta_em).toLocaleString("pt-BR")} · Responsável: {r.autor_id===user.id?"Professor autenticado":r.autor_id}</p>
+    <p className="small"><strong>Motivo:</strong> {r.motivo}</p>
+    {r.encerrada_em&&<p className="muted small">Concluída em {new Date(r.encerrada_em).toLocaleString("pt-BR")} · Por: {r.encerrada_por===user.id?"Professor autenticado":(r.encerrada_por??"Não identificado")}</p>}
+    {r.encerrada_em&&mudancas.length===0&&!observacoesAlteradas&&<p className="small">Nenhuma alteração de conceito, peso ou observações identificada.</p>}
+    {r.encerrada_em&&mudancas.map(i=>{
+     const original=antes.find(a=>a.competencia_id===i.competencia_id);
+     return <p className="small" key={i.competencia_id}>{i.competencia_nome_snapshot}: {original?.conceito??"Não existia"} → {i.conceito}{original&&Number(original.peso_aplicado)!==Number(i.peso_aplicado)?" (peso "+original.peso_aplicado+" → "+i.peso_aplicado+")":""}</p>;
+    })}
+    {r.encerrada_em&&observacoesAlteradas&&<p className="small">Observações pedagógicas alteradas (conteúdo preservado nos snapshots).</p>}
+   </div></div>;
+  })}</div>;
+ };
  function celula(m:{id:string;nome:string},c:{id:string}){
   const av=avaliacaoDe(m.id),e=estadoDe(m.id);
   return <select aria-label={m.nome+" — "+(disponiveis.find(x=>x.id===c.id)?.nome??"competência")} value={e.notas[c.id]??"nao_avaliado"} disabled={salvando!==null||av?.status==="concluida"} onChange={event=>editar(m.id,{notas:{...e.notas,[c.id]:event.target.value as Conceito}})}>
@@ -198,10 +250,21 @@ function Tela({user}:{user:User}){
      </div>)}</div>
      <label className="field">Observações pedagógicas (opcional)<textarea rows={3} maxLength={2000} value={e.observacoes} disabled={concl} onChange={ev=>editar(m.id,{observacoes:ev.target.value})}/></label>
      <h2>Indicador: {formato(indicadorDe(m.id))} / 10,0</h2>
+     {concl&&<section className="top-space"><h3>Revisão controlada</h3>
+      <p className="muted small">Para corrigir uma avaliação concluída, informe a justificativa. A versão anterior será preservada no histórico.</p>
+      {reabrindo===av?.id?<div>
+       <label className="field">Motivo da reabertura<textarea rows={3} maxLength={1000} value={motivo} onChange={ev=>setMotivo(ev.target.value)} placeholder="Explique o motivo da revisão (mínimo 10 caracteres)" /></label>
+       <div className="row" style={{justifyContent:"flex-start"}}>
+        <button disabled={salvando!==null||motivo.trim().length<10} onClick={()=>av&&void reabrir(av)}>Confirmar reabertura</button>
+        <button className="secondary" disabled={salvando!==null} onClick={()=>{setReabrindo(null);setMotivo("");}}>Cancelar</button>
+       </div></div>:
+       <button className="secondary" disabled={salvando!==null||!revisoesDisponiveis} onClick={()=>{setReabrindo(av?.id??null);setMotivo("");}}>Solicitar reabertura</button>}
+      </section>}
      {!concl&&<div className="row" style={{justifyContent:"flex-start"}}>
       <button disabled={salvando!==null} onClick={()=>void salvar(m.id,false)}>Salvar rascunho</button>
       <button disabled={salvando!==null} onClick={()=>void salvar(m.id,true)}>Concluir avaliação</button>
      </div>}
+     {av&&<section className="top-space"><h3>Histórico de revisões</h3>{historico(av)}</section>}
     </div>;
    })}
   </section>}
@@ -214,14 +277,14 @@ function Tela({user}:{user:User}){
       return <tr key={m.id}><th>{m.nome}</th>{disponiveis.map(c=><td key={c.id}>{celula(m,c)}</td>)}
        <td><strong>{formato(indicadorDe(m.id))}</strong></td>
        <td><div className="stack" style={{minWidth:145}}><span className="muted small">{av?.status==="concluida"?"Concluída":av?"Rascunho":"Não iniciada"}</span>
-        {av?.status!=="concluida"&&<><button disabled={salvando!==null} onClick={()=>void salvar(m.id,false)}>Salvar</button><button className="secondary" disabled={salvando!==null} onClick={()=>void salvar(m.id,true)}>Concluir</button></>}
+        {av?.status!=="concluida"?<><button disabled={salvando!==null} onClick={()=>void salvar(m.id,false)}>Salvar</button><button className="secondary" disabled={salvando!==null} onClick={()=>void salvar(m.id,true)}>Concluir</button></>:<button className="secondary" disabled={salvando!==null} onClick={()=>{setMatriculaId(m.id);setModo("individual");setReabrindo(null);}}>Ver / Revisar</button>}
        </div></td>
       </tr>;
     })}</tbody></table>
    </div>
   </section>}
   {!carregando&&alunosNaTurma.length===0&&<section className="card top-space"><p>Esta turma não possui matrículas ativas.</p><a href="/alunos">Cadastrar alunos</a></section>}
-  <p className="muted small top-space">Avaliações concluídas não podem ser alteradas nesta versão. O histórico de alterações e a revisão auditada serão implementados antes do uso em produção com dados reais.</p>
+  <p className="muted small top-space">Avaliações concluídas permanecem bloqueadas até a reabertura com justificativa. O banco mantém snapshots da versão anterior e da versão corrigida.</p>
  </main>;
 }
 export default function AvaliacoesPage(){return <ProfessorShell>{user=><Tela user={user}/>}</ProfessorShell>;}
