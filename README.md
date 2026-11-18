@@ -14,6 +14,10 @@ Sistema web individual de acompanhamento pedagógico de professores do **Ensino 
 
 Revisão da documentação: **18/11/2026**.
 
+## Catálogo interativo do Design System
+
+O laboratório visual da Paleta D está disponível em [`/design-system`](src/app/design-system/page.tsx), acessível pelo cartão do Dashboard após o login. A página usa componentes React isolados, tokens e CSS escopado e não grava dados no Supabase. Os formulários, tabelas, botões e o simulador de avaliação são exemplos fictícios. As demais páginas operacionais ainda usam o estilo legado até a migração gradual.
+
 ## Identidade visual
 
 A paleta **D — Criativa Contemporânea** foi escolhida para a identidade visual da V1: índigo, lavanda e pêssego. A especificação e os tokens estão versionados em `src/styles/design-tokens.css`. **A aplicação visual nas telas ainda não começou**; o arquivo de tokens não é importado em produção para evitar regressões.
