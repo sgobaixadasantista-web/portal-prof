@@ -1,0 +1,271 @@
+/* Design System D — avaliações e relatórios
+   Escopo visual exclusivo; nenhum cálculo, formulário ou RPC alterado. */
+.pp-pedagogical{
+ max-width:var(--pp-width-content);
+ padding-top:34px;
+ padding-bottom:70px;
+ color:var(--pp-color-text);
+}
+.pp-pedagogical .pp-ped-eyebrow{
+ display:block;
+ font-size:11px;
+ font-weight:800;
+ letter-spacing:.12em;
+ text-transform:uppercase;
+ color:var(--pp-color-primary);
+ margin-bottom:8px;
+}
+.pp-pedagogical h1{
+ font-size:clamp(24px,2.4vw,30px);
+ font-weight:700;
+ color:var(--pp-indigo-900);
+ letter-spacing:-.025em;
+ line-height:1.25;
+ margin:0 0 9px;
+}
+.pp-pedagogical h1 + .muted{font-size:14px;line-height:1.6;margin:0 0 24px}
+.pp-pedagogical h2{color:var(--pp-indigo-900);font-size:19px;letter-spacing:-.012em}
+.pp-pedagogical h3{color:var(--pp-indigo-900);font-size:16px;line-height:1.4}
+.pp-pedagogical .card{
+ border-radius:var(--pp-radius-xl);
+ border-color:var(--pp-color-border);
+ padding:clamp(18px,2.4vw,28px);
+ box-shadow:var(--pp-shadow-card);
+ min-width:0;
+}
+.pp-pedagogical .field{
+ font-size:13px;
+ font-weight:600;
+ color:var(--pp-color-text);
+ gap:7px;
+ min-width:0;
+}
+.pp-pedagogical :is(input,textarea,select){
+ background:white;
+ border:1px solid #C8C4D9;
+ border-radius:var(--pp-radius-md);
+ color:var(--pp-color-text);
+ font-size:14px;
+ padding:11px 12px;
+ max-width:100%;
+}
+.pp-pedagogical :is(input,select){min-height:44px}
+.pp-pedagogical textarea{display:block;width:100%;min-height:92px;resize:vertical}
+.pp-pedagogical :is(input,textarea,select):focus-visible{border-color:var(--pp-color-primary);outline:3px solid var(--pp-color-focus-ring);outline-offset:1px}
+.pp-pedagogical :is(input,textarea,select):disabled{background:var(--pp-color-disabled-bg);color:var(--pp-color-disabled-text)}
+.pp-pedagogical button{font-size:13px;font-weight:600;min-height:42px}
+.pp-pedagogical .pp-ped-tabs{
+ display:flex;
+ flex-wrap:wrap;
+ gap:6px!important;
+ width:fit-content;
+ max-width:100%;
+ background:var(--pp-indigo-50);
+ border-radius:12px;
+ padding:5px;
+ margin-top:18px;
+}
+.pp-pedagogical .pp-ped-tabs button{
+ min-height:38px;
+ box-shadow:none;
+ border:0;
+ padding:9px 15px;
+ border-radius:9px;
+}
+.pp-pedagogical .pp-ped-tabs button.secondary{background:transparent;color:var(--pp-indigo-700)}
+.pp-pedagogical .pp-ped-tabs button.secondary:hover:not(:disabled){background:var(--pp-indigo-100)}
+.pp-pedagogical .pp-ped-tab-active{
+ background:var(--pp-color-primary);
+ color:white;
+}
+.pp-pedagogical .pp-ped-tab-active:hover:not(:disabled){background:var(--pp-color-primary-hover)}
+.pp-pedagogical .pp-filter-card{
+ background:linear-gradient(125deg,#FFF 75%,var(--pp-indigo-50));
+ border:1px solid var(--pp-color-border);
+}
+.pp-pedagogical .form-grid{gap:5px 18px}
+.pp-pedagogical .turma-lista{gap:11px;margin:16px 0}
+.pp-pedagogical .turma-item{
+ background:white;
+ border:1px solid var(--pp-color-border);
+ border-radius:var(--pp-radius-lg);
+ padding:16px 18px;
+ min-width:0;
+}
+.pp-pedagogical .turma-item strong{color:var(--pp-indigo-900);font-size:14px;overflow-wrap:anywhere}
+.pp-pedagogical .turma-item p{line-height:1.4}
+.pp-pedagogical .turma-item select{min-width:145px}
+.pp-pedagogical .pp-ped-status-line{
+ display:flex;
+ flex-wrap:wrap;
+ align-items:center;
+ gap:10px;
+ color:var(--pp-color-text-muted);
+ font-size:13px;
+ margin:18px 0 15px;
+}
+.pp-pedagogical .pp-ped-badge{
+ background:var(--pp-neutral-100);
+ color:var(--pp-color-text-muted);
+ display:inline-flex;
+ align-items:center;
+ padding:5px 10px;
+ border-radius:999px;
+ font-size:12px;
+ font-weight:700;
+}
+.pp-pedagogical .pp-ped-badge--warning{color:var(--pp-color-warning);background:var(--pp-color-warning-soft)}
+.pp-pedagogical .pp-ped-badge--success{color:var(--pp-color-success);background:var(--pp-color-success-soft)}
+.pp-pedagogical .pp-indicator{
+ display:flex;
+ flex-wrap:wrap;
+ align-items:center;
+ justify-content:space-between;
+ gap:18px;
+ background:var(--pp-indigo-50);
+ border:1px solid var(--pp-indigo-100);
+ border-radius:14px;
+ padding:16px 20px;
+ margin:23px 0 16px;
+}
+.pp-pedagogical .pp-indicator div{display:grid;gap:4px}
+.pp-pedagogical .pp-indicator div>span{font-size:14px;font-weight:700;color:var(--pp-indigo-900)}
+.pp-pedagogical .pp-indicator small{font-size:12px;color:var(--pp-color-text-muted);font-weight:500}
+.pp-pedagogical .pp-indicator>strong{font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--pp-indigo-900)}
+.pp-pedagogical .pp-review-panel{
+ border:1px solid #E6D8B0;
+ border-radius:12px;
+ background:#FFFBF0;
+ padding:18px;
+}
+.pp-pedagogical .pp-history-panel{
+ border:1px solid var(--pp-color-border);
+ border-radius:12px;
+ padding:18px;
+ background:#FCFBFF;
+}
+.pp-pedagogical .pp-review-panel h3,.pp-pedagogical .pp-history-panel h3{margin-top:0}
+.pp-pedagogical .avaliacao-grade{
+ width:100%;
+ min-width:750px;
+ border-collapse:separate;
+ border-spacing:0;
+ font-size:13px;
+}
+.pp-pedagogical .pp-table-scroll,.pp-pedagogical .relatorio-tabela-wrap{
+ border:1px solid var(--pp-color-border);
+ border-radius:12px;
+ overflow:auto;
+ max-width:100%;
+}
+.pp-pedagogical .avaliacao-grade th,.pp-pedagogical .avaliacao-grade td{
+ border-bottom:1px solid var(--pp-color-border);
+ padding:12px;
+ vertical-align:middle;
+}
+.pp-pedagogical .avaliacao-grade thead th{
+ background:var(--pp-indigo-50);
+ color:var(--pp-indigo-900);
+ font-weight:700;
+ min-width:140px;
+}
+.pp-pedagogical .avaliacao-grade th:first-child{
+ position:sticky;
+ left:0;
+ z-index:1;
+ background:var(--pp-color-surface-soft);
+}
+.pp-pedagogical .avaliacao-grade tbody tr:hover td{background:#FCFBFF}
+.pp-pedagogical .avaliacao-grade td select{width:100%;min-width:148px}
+.pp-pedagogical .avaliacao-grade td strong{font-variant-numeric:tabular-nums;color:var(--pp-indigo-900)}
+.pp-pedagogical .avaliacao-grade .stack{gap:7px}
+.pp-pedagogical .avaliacao-grade .stack button{padding:8px 12px;min-height:36px}
+.pp-pedagogical > p.error,.pp-pedagogical > p.success{
+ border-radius:10px;
+ padding:12px 15px;
+ font-size:14px;
+ border:1px solid transparent;
+}
+.pp-pedagogical > p.error{background:var(--pp-color-danger-soft);border-color:#EDBFC6}
+.pp-pedagogical > p.success{background:var(--pp-color-success-soft);border-color:#B8DDC7}
+/* Relatórios V0.7 */
+.pp-reports .relatorios-cabecalho{align-items:start;gap:16px;margin-bottom:23px}
+.pp-reports .relatorios-cabecalho .muted{font-size:14px;line-height:1.5;max-width:670px}
+.pp-reports .relatorio-acoes{
+ background:transparent;
+ justify-content:space-between;
+ gap:14px;
+}
+.pp-reports .pp-report-document{background:white}
+.pp-reports .relatorio-capa{
+ border-bottom:1px solid var(--pp-color-border);
+ padding-bottom:15px;
+ margin-bottom:20px;
+}
+.pp-reports .relatorio-capa h2{font-size:22px;margin:0 0 9px}
+.pp-reports .relatorio-capa p{margin:5px 0;line-height:1.5}
+.pp-reports .indicadores-resumo{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:12px;
+ margin:18px 0 25px;
+}
+.pp-reports .indicadores-resumo > div{
+ background:var(--pp-indigo-50);
+ border:1px solid var(--pp-indigo-100);
+ border-radius:12px;
+ padding:18px;
+ display:grid;
+ gap:9px;
+}
+.pp-reports .indicadores-resumo strong{
+ font-size:clamp(21px,2.5vw,29px);
+ color:var(--pp-indigo-900);
+ line-height:1.15;
+ font-variant-numeric:tabular-nums;
+}
+.pp-reports .relatorio-tabela{border-collapse:collapse;width:100%;font-size:13px}
+.pp-reports .relatorio-tabela th,.pp-reports .relatorio-tabela td{
+ padding:11px 12px;
+ border-bottom:1px solid var(--pp-color-border);
+ line-height:1.45;
+ vertical-align:top;
+}
+.pp-reports .relatorio-tabela th{
+ background:var(--pp-indigo-50);
+ color:var(--pp-indigo-900);
+ white-space:normal;
+}
+.pp-reports .relatorio-tabela tbody tr:hover td{background:#FCFBFF}
+.pp-reports .relatorio-tabela tbody tr:last-child td{border-bottom:0}
+.pp-reports .relatorio-bloco{padding:20px 0;border-top:1px solid var(--pp-color-border)}
+.pp-reports .relatorio-bloco h3{font-size:17px;margin:0 0 7px}
+.pp-reports .relatorio-bloco > p{line-height:1.6}
+.pp-reports .relatorio-bloco .relatorio-tabela-wrap{margin-top:12px}
+@media(max-width:740px){
+ .pp-pedagogical{padding:22px 14px 54px}
+ .pp-pedagogical .card{padding:17px}
+ .pp-pedagogical .pp-ped-tabs{width:100%}
+ .pp-pedagogical .pp-ped-tabs button{flex:1}
+ .pp-pedagogical .turma-item{gap:12px}
+ .pp-pedagogical .pp-indicator{align-items:start}
+ .pp-reports .indicadores-resumo{grid-template-columns:1fr}
+ .pp-reports .relatorio-acoes > .row{justify-content:flex-start!important}
+}
+@media print{
+ .pp-pedagogical{max-width:none;padding:0;background:white;color:#111}
+ .pp-pedagogical .pp-filter-card,.pp-pedagogical .pp-ped-tabs,.pp-pedagogical .relatorio-acoes{display:none!important}
+ .pp-pedagogical .card,.pp-pedagogical .pp-report-document{
+  padding:0!important;border:none!important;border-radius:0!important;box-shadow:none!important;
+ }
+ .pp-reports .relatorio-capa h2{color:#111!important}
+ .pp-reports .indicadores-resumo{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+ .pp-reports .indicadores-resumo>div{background:#fff!important;border:1px solid #bbb!important;padding:9px}
+ .pp-reports .indicadores-resumo strong{color:#111!important}
+ .pp-reports .relatorio-tabela-wrap{overflow:visible;border:0;border-radius:0}
+ .pp-reports .relatorio-tabela{min-width:0;font-size:10px}
+ .pp-reports .relatorio-tabela th,.pp-reports .relatorio-tabela td{padding:6px;border-color:#ccc}
+ .pp-reports .relatorio-tabela th{color:#111!important;background:#eee!important}
+ .pp-reports .relatorio-tabela thead{display:table-header-group}
+ .pp-reports .relatorio-bloco{break-inside:avoid}
+}
